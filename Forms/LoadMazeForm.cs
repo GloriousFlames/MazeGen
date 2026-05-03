@@ -1,0 +1,76 @@
+using System;
+using System.Windows.Forms;
+
+namespace MazeGen
+{
+    public partial class LoadMazeForm : Form
+    {
+        public LoadMazeForm()
+        {
+            InitializeComponent();
+        }
+
+        private void InitializeComponent()
+        {
+            this.Text = "Загрузить лабиринт";
+            this.Size = new System.Drawing.Size(400, 200);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+
+            // Заголовок
+            var lblTitle = new Label
+            {
+                Text = "Загрузка лабиринта",
+                Font = new System.Drawing.Font("Segoe UI", 16),
+                Location = new System.Drawing.Point(100, 10),
+                Size = new System.Drawing.Size(80, 30),
+                AutoSize = true
+            };
+            this.Controls.Add(lblTitle);
+
+            var lblMazes = new Label
+            {
+                Text = "Выберите лабиринт:",
+                Location = new System.Drawing.Point(20, 60),
+                Font = new System.Drawing.Font("Segoe UI", 12),
+                Size = new System.Drawing.Size(150, 20),
+                AutoSize = true
+            };
+            this.Controls.Add(lblMazes);
+
+            var cmbMazes = new ComboBox
+            {
+                Name = "cmbMazes",
+                Location = new System.Drawing.Point(200, 60),
+                Size = new System.Drawing.Size(150, 20),
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            cmbMazes.Items.AddRange(new object[] { "Лабиринт 1", "Лабиринт 2", "Лабиринт 3" });
+            this.Controls.Add(cmbMazes);
+
+            var btnLoad = new Button
+            {
+                Text = "Загрузить",
+                Location = new System.Drawing.Point(150, 100),
+                Size = new System.Drawing.Size(100, 40),
+                BackColor = System.Drawing.Color.Ivory,
+                Font = new System.Drawing.Font("Segoe UI", 12)
+            };
+            btnLoad.Click += (s, e) => Load();
+            this.Controls.Add(btnLoad);
+        }
+
+        private void Load()
+        {
+            var cmb = this.Controls["cmbMazes"] as ComboBox;
+            if (cmb.SelectedIndex == -1)
+            {
+                MessageBox.Show("Выберите лабиринт!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            MessageBox.Show($"Лабиринт '{cmb.SelectedItem}' загружен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Close();
+        }
+    }
+}

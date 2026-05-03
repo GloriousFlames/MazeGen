@@ -1,0 +1,17 @@
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.AssemblyInfo.cs
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\MazeGen\bin\Debug\net10.0-windows\MazeGen.exe
+C:\Users\User\source\repos\MazeGen\bin\Debug\net10.0-windows\MazeGen.deps.json
+C:\Users\User\source\repos\MazeGen\bin\Debug\net10.0-windows\MazeGen.runtimeconfig.json
+C:\Users\User\source\repos\MazeGen\bin\Debug\net10.0-windows\MazeGen.dll
+C:\Users\User\source\repos\MazeGen\bin\Debug\net10.0-windows\MazeGen.pdb
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.dll
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\refint\MazeGen.dll
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.pdb
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.genruntimeconfig.cache
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\ref\MazeGen.dll
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.Forms.Form1.resources
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.LoginForm.resources
+C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.csproj.GenerateResource.cache
