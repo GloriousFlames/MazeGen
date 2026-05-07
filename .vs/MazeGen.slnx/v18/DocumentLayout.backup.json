@@ -3,20 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\User\\source\\repos\\MazeGen\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\forms\\playermainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:forms\\playermainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\services\\mazeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:services\\mazeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\forms\\adminmainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:forms\\adminmainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\forms\\playermainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:forms\\playermainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\services\\authenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:services\\authenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\forms\\adminmainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:forms\\adminmainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\forms\\aboutform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -25,14 +41,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\forms\\registerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:forms\\registerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\services\\authenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:services\\authenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,7 +50,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,20 +58,46 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Models\\User.cs",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Models\\User.cs",
+              "RelativeToolTip": "Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T09:29:52.514Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "MazeService.cs",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Services\\MazeService.cs",
+              "RelativeDocumentMoniker": "Services\\MazeService.cs",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Services\\MazeService.cs*",
+              "RelativeToolTip": "Services\\MazeService.cs*",
+              "ViewState": "AgIAAD4AAAAAAAAAAAA9wFUAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-03T19:21:00.923Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "PlayerMainForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\PlayerMainForm.cs",
               "RelativeDocumentMoniker": "Forms\\PlayerMainForm.cs",
-              "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\PlayerMainForm.cs*",
-              "RelativeToolTip": "Forms\\PlayerMainForm.cs*",
-              "ViewState": "AgIAAP0AAAAAAAAAAAAhwAwBAAA2AAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\PlayerMainForm.cs",
+              "RelativeToolTip": "Forms\\PlayerMainForm.cs",
+              "ViewState": "AgIAABIBAAAAAAAAAAAhwAIBAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-03T17:31:16.257Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "AboutForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\AboutForm.cs",
               "RelativeDocumentMoniker": "Forms\\AboutForm.cs",
@@ -71,25 +105,24 @@
               "RelativeToolTip": "Forms\\AboutForm.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAAAgwBUAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T19:51:40.538Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-02T19:51:40.538Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-02T19:42:27.944Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "RegisterForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\RegisterForm.cs",
               "RelativeDocumentMoniker": "Forms\\RegisterForm.cs",
@@ -97,55 +130,55 @@
               "RelativeToolTip": "Forms\\RegisterForm.cs",
               "ViewState": "AgIAAEsAAAAAAAAAAAAowGoAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T19:32:58.812Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-02T19:32:58.812Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "LoginForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\LoginForm.cs",
               "RelativeDocumentMoniker": "Forms\\LoginForm.cs",
               "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\LoginForm.cs",
               "RelativeToolTip": "Forms\\LoginForm.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAowEUAAAAxAAAAAAAAAA==",
+              "ViewState": "AgIAACoAAAAAAAAAAAAowEUAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-02T19:07:17.784Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 5,
               "Title": "AuthenticationService.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Services\\AuthenticationService.cs",
               "RelativeDocumentMoniker": "Services\\AuthenticationService.cs",
               "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Services\\AuthenticationService.cs",
               "RelativeToolTip": "Services\\AuthenticationService.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAgwDoAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-02T18:59:47.41Z"
+              "WhenOpened": "2026-05-02T18:59:47.41Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": "AdminMainForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\AdminMainForm.cs",
               "RelativeDocumentMoniker": "Forms\\AdminMainForm.cs",
               "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\AdminMainForm.cs",
               "RelativeToolTip": "Forms\\AdminMainForm.cs",
-              "ViewState": "AgIAAOwAAAAAAAAAAAAAAPkAAAAeAAAAAAAAAA==",
+              "ViewState": "AgIAACcBAAAAAAAAAAAiwMQBAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-02T18:55:01.291Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "README.md",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\README.md",
               "RelativeDocumentMoniker": "README.md",
               "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\README.md",
               "RelativeToolTip": "README.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAAC8AAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
               "WhenOpened": "2026-05-03T16:47:45.124Z",
               "EditorCaption": ""

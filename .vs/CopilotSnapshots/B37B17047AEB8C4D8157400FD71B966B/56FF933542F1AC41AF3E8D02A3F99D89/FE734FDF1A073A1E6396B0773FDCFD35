@@ -1,4 +1,4 @@
-using MazeGen.Models;
+﻿using MazeGen.Models;
 
 namespace MazeGen.Services
 {
@@ -6,6 +6,8 @@ namespace MazeGen.Services
     {
         private List<Maze> mazes = new List<Maze>();
         private Random rand = new Random();
+
+        // 0 = wall, 1 = path
         public Maze CreateTemplate(int width, int height, Theme theme)
         {
             if (width % 2 == 0) width++;
@@ -13,7 +15,7 @@ namespace MazeGen.Services
             var grid = new int[width, height];
             for (int x = 0; x < width; x++)
                 for (int y = 0; y < height; y++)
-                    grid[x, y] = 0;
+                    grid[x, y] = 0; // all walls
 
             return new Maze
             {
@@ -22,13 +24,13 @@ namespace MazeGen.Services
                 Height = height,
                 Theme = theme,
                 Grid = grid,
-                //CreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                CreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
         }
 
         public void PlaceEntranceExit(Maze maze, bool auto, Point? manualEntrance = null, Point? manualExit = null)
         {
-            // Очистить предыдущие вход и выход
+            // Очистить предыдущие вход и выход (если были)
             if (maze.Entrance != Point.Empty)
                 maze.Grid[maze.Entrance.X, maze.Entrance.Y] = 0;
             if (maze.Exit != Point.Empty)
@@ -84,23 +86,21 @@ namespace MazeGen.Services
 
         private bool IsValidEntranceExit(Point a, Point b, int width, int height)
         {
-            if (!IsValidPerimeterPoint(a, width, height)) return false;
-            if (!IsValidPerimeterPoint(b, width, height)) return false;
-
-            // Если не соседи
-            return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) >= 2;
-        }
-
-        private bool IsValidPerimeterPoint(Point p, int width, int height)
-        {
-            // Левая/правая стена: X фиксирован, Y нечётный и не угловой
-            bool onLeft = p.X == 0 && p.Y % 2 == 1 && p.Y < height - 1;
-            bool onRight = p.X == width - 1 && p.Y % 2 == 1 && p.Y < height - 1;
-            // Верхняя/нижняя стена: Y фиксирован, X нечётный и не угловой
-            bool onTop = p.Y == 0 && p.X % 2 == 1 && p.X < width - 1;
-            bool onBottom = p.Y == height - 1 && p.X % 2 == 1 && p.X < width - 1;
-
-            return onLeft || onRight || onTop || onBottom;
+            if (a == b) return false;
+            if ((a.X == 0 || a.X == width - 1 || a.Y == 0 || a.Y == height - 1) &&
+                (b.X == 0 || b.X == width - 1 || b.Y == 0 || b.Y == height - 1))
+            {
+                if ((a.X == 0 && a.Y == 0) || (a.X == 0 && a.Y == height - 1) ||
+                    (a.X == width - 1 && a.Y == 0) || (a.X == width - 1 && a.Y == height - 1))
+                    return false;
+                if ((b.X == 0 && b.Y == 0) || (b.X == 0 && b.Y == height - 1) ||
+                    (b.X == width - 1 && b.Y == 0) || (b.X == width - 1 && b.Y == height - 1))
+                    return false;
+                if (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) <= 1)
+                    return false;
+                return true;
+            }
+            return false;
         }
 
         public void GenerateMaze(Maze maze, string algorithm)
@@ -117,7 +117,7 @@ namespace MazeGen.Services
             int w = maze.Width, h = maze.Height;
             var grid = maze.Grid;
 
-            // Все клетки - стены
+            // 1. Все клетки - стены
             for (int i = 0; i < w; i++)
             {
                 for (int j = 0; j < h; j++)
@@ -126,15 +126,32 @@ namespace MazeGen.Services
                 }
             }
 
-            // Выбираем случайную клетку с нечетными координатами и очищаем её
+            //// Восстановим периметр как стены (кроме входа/выхода)
+            //for (int i = 0; i < w; i++)
+            //{
+            //    if (maze.Entrance != new Point(i, 0) && maze.Exit != new Point(i, 0))
+            //        grid[i, 0] = 0;
+            //    if (maze.Entrance != new Point(i, h - 1) && maze.Exit != new Point(i, h - 1))
+            //        grid[i, h - 1] = 0;
+            //}
+            //for (int j = 0; j < h; j++)
+            //{
+            //    if (maze.Entrance != new Point(0, j) && maze.Exit != new Point(0, j))
+            //        grid[0, j] = 0;
+            //    if (maze.Entrance != new Point(w - 1, j) && maze.Exit != new Point(w - 1, j))
+            //        grid[w - 1, j] = 0;
+            //}
+
+            // 2. Выбираем случайную клетку с нечетными координатами и очищаем её
             int x = rand.Next(w / 2) * 2 + 1;
             int y = rand.Next(h / 2) * 2 + 1;
             grid[x, y] = 1;
 
-            // Создаем список клеток для проверки - клетки на расстоянии 2
+            // 3. Создаем список клеток для проверки - клетки на расстоянии 2 ортогонального пространства
             var toCheck = new List<Point>();
             AddNeighborsToCheck(toCheck, x, y, w, h, grid);
 
+            // 4. Основной цикл
             while (toCheck.Count > 0)
             {
                 // Выбираем случайную клетку
@@ -158,7 +175,7 @@ namespace MazeGen.Services
 
                     if (nx >= 0 && nx < w && ny >= 0 && ny < h && grid[nx, ny] == 1)
                     {
-                        // Очищаем клетку между ними
+                        // Очищаем клетку между ними (соединяем)
                         grid[x + dx / 2, y + dy / 2] = 1;
                         connected = true;
                     }
@@ -170,6 +187,7 @@ namespace MazeGen.Services
                 AddNeighborsToCheck(toCheck, x, y, w, h, grid);
             }
 
+            // Убедитесь, что вход и выход открыты
             grid[maze.Entrance.X, maze.Entrance.Y] = 1;
             grid[maze.Exit.X, maze.Exit.Y] = 1;
         }
@@ -192,112 +210,169 @@ namespace MazeGen.Services
             int w = maze.Width, h = maze.Height;
             var grid = maze.Grid;
 
-            // Все клетки — стены
+            // 1. Все клетки - стены
             for (int x = 0; x < w; x++)
+            {
                 for (int y = 0; y < h; y++)
+                {
                     grid[x, y] = 0;
+                }
+            }
 
-            var cellToSet = new Dictionary<int, int>();
+            // Восстановим периметр как стены (кроме входа/выхода)
+            for (int x = 0; x < w; x++)
+            {
+                if (maze.Entrance != new Point(x, 0) && maze.Exit != new Point(x, 0))
+                    grid[x, 0] = 0;
+                if (maze.Entrance != new Point(x, h - 1) && maze.Exit != new Point(x, h - 1))
+                    grid[x, h - 1] = 0;
+            }
+            for (int y = 0; y < h; y++)
+            {
+                if (maze.Entrance != new Point(0, y) && maze.Exit != new Point(0, y))
+                    grid[0, y] = 0;
+                if (maze.Entrance != new Point(w - 1, y) && maze.Exit != new Point(w - 1, y))
+                    grid[w - 1, y] = 0;
+            }
+
+            // Массив для отслеживания множеств текущей строки
+            Dictionary<int, int> cellToSet = new Dictionary<int, int>();
             int nextSetId = 1;
 
+            // Процесс обработки строк (толстостенный лабиринт: ячейки на нечетных y)
             for (int row = 1; row < h - 1; row += 2)
             {
-                // Открыть все ячейки строки
+                // 1. Создать строку ячеек (открыть все ячейки)
                 for (int col = 1; col < w - 1; col += 2)
+                {
                     grid[col, row] = 1;
+                }
 
-                // Присвоить множество ячейкам, у которых его ещё нет
+                // 2. Присвоить множество каждой ячейке, которая его еще не имеет
                 for (int col = 1; col < w - 1; col += 2)
+                {
                     if (!cellToSet.ContainsKey(col))
+                    {
                         cellToSet[col] = nextSetId++;
+                    }
+                }
 
-                // Случайно создавать/удалять правые стены
+                // 3. Создать правые стены (между ячейками в строке)
                 for (int col = 1; col < w - 3; col += 2)
                 {
                     int set1 = cellToSet[col];
                     int set2 = cellToSet[col + 2];
 
+                    // Если одно множество - всегда создаем стену
                     if (set1 == set2)
                     {
                         grid[col + 1, row] = 0;
                     }
-                    else if (rand.Next(2) == 0)
-                    {
-                        grid[col + 1, row] = 1;
-                        MergeSets(cellToSet, set1, set2);
-                    }
                     else
                     {
-                        grid[col + 1, row] = 0;
-                    }
-                }
-
-                // Если не последняя строка — создать нижние стены
-                if (row < h - 2)
-                {
-                    // Счётчик открытых проходов вниз для каждого множества
-                    var setDownCount = new Dictionary<int, int>();
-                    for (int col = 1; col < w - 1; col += 2)
-                    {
-                        int set = cellToSet[col];
-                        if (!setDownCount.ContainsKey(set))
-                            setDownCount[set] = 0;
-                    }
-
-                    // Случайно расставить нижние стены
-                    for (int col = 1; col < w - 1; col += 2)
-                    {
-                        int set = cellToSet[col];
+                        // Если разные множества - случайно решаем
                         if (rand.Next(2) == 0)
                         {
-                            grid[col, row + 1] = 1;
-                            setDownCount[set]++;
+                            // Удаляем стену и объединяем множества
+                            grid[col + 1, row] = 1;
+                            MergeSetsCells(cellToSet, set1, set2);
                         }
                         else
                         {
-                            grid[col, row + 1] = 0;
+                            // Оставляем стену
+                            grid[col + 1, row] = 0;
                         }
                     }
+                }
+
+                // 4. Если это не последняя строка - создать нижние стены
+                if (row < h - 2)
+                {
+                    // Подсчитываем, сколько ячеек каждого множества
+                    var setHasDown = new Dictionary<int, bool>();
+                    var setCount = new Dictionary<int, int>();
+                    var setCellsWithoutDown = new Dictionary<int, int>();
 
                     for (int col = 1; col < w - 1; col += 2)
                     {
                         int set = cellToSet[col];
-                        if (setDownCount[set] == 0)
+                        if (!setCount.ContainsKey(set))
                         {
-                            grid[col, row + 1] = 1;
-                            setDownCount[set]++;
+                            setCount[set] = 0;
+                            setCellsWithoutDown[set] = 0;
+                        }
+                        setCount[set]++;
+                    }
+
+                    // Случайно решаем, добавлять нижние стены
+                    for (int col = 1; col < w - 1; col += 2)
+                    {
+                        int set = cellToSet[col];
+                        bool hasDown = rand.Next(2) == 0;
+
+                        if (hasDown)
+                        {
+                            grid[col, row + 1] = 0; // стена
+                        }
+                        else
+                        {
+                            grid[col, row + 1] = 1; // проход
+                            setCellsWithoutDown[set]++;
                         }
                     }
 
-                    // Подготовить следующую строку
-                    var newCellToSet = new Dictionary<int, int>();
+                    // Убедитесь, что каждое множество имеет по крайней мере одну ячейку без нижней стены
                     for (int col = 1; col < w - 1; col += 2)
-                        if (grid[col, row + 1] == 1)
-                            newCellToSet[col] = cellToSet[col];
+                    {
+                        int set = cellToSet[col];
+                        if (setCellsWithoutDown[set] == 0)
+                        {
+                            grid[col, row + 1] = 1; // открыть проход вниз
+                            break;
+                        }
+                    }
 
+                    // 5. Подготовка следующей строки
+                    Dictionary<int, int> newCellToSet = new Dictionary<int, int>();
+                    for (int col = 1; col < w - 1; col += 2)
+                    {
+                        if (grid[col, row + 1] == 1)
+                        {
+                            // Ячейка с проходом вниз наследует множество
+                            newCellToSet[col] = cellToSet[col];
+                        }
+                        // Если стена вниз - ячейка снизу не будет иметь множество (получит новое на шаге 2)
+                    }
                     cellToSet = newCellToSet;
                 }
                 else
                 {
-                    // Последняя строка: соединить все разные множества
+                    // 6. На последней строке: добавить нижние стены и объединить множества
+                    for (int col = 1; col < w - 1; col += 2)
+                    {
+                        grid[col, row + 1] = 0; // нижняя стена (периметр)
+                    }
+
+                    // Соединить все множества (удалить правые стены где нужно)
                     for (int col = 1; col < w - 3; col += 2)
                     {
                         int set1 = cellToSet[col];
                         int set2 = cellToSet[col + 2];
                         if (set1 != set2)
                         {
-                            grid[col + 1, row] = 1;
-                            MergeSets(cellToSet, set1, set2);
+                            grid[col + 1, row] = 1; // удалить стену
+                            MergeSetsCells(cellToSet, set1, set2);
                         }
                     }
                 }
             }
 
+            // Убедитесь, что вход и выход открыты
             grid[maze.Entrance.X, maze.Entrance.Y] = 1;
             grid[maze.Exit.X, maze.Exit.Y] = 1;
         }
 
-        private void MergeSets(Dictionary<int, int> cellToSet, int oldSet, int newSet)
+        private void MergeSetsCells(Dictionary<int, int> cellToSet, int oldSet, int newSet)
         {
             var keysToUpdate = cellToSet.Where(kvp => kvp.Value == oldSet).Select(kvp => kvp.Key).ToList();
             foreach (var key in keysToUpdate)

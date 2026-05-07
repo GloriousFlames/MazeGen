@@ -12,11 +12,25 @@ namespace MazeGen
         private MazeService mazeService;
         private Theme currentTheme = Theme.Forest;
 
+        // Добавьте поля класса
+        private Maze currentMaze;
+        private bool isPlacingEntranceExit = false;
+        private int placementStep = 0;
+        private Point? manualEntrance = null;
+        private Point? manualExit = null;
+        private List<Point> pathCells = new List<Point>();
+
+        private Panel pnlMazeView;
+
         public AdminMainForm(User user)
         {
             currentUser = user;
             mazeService = new MazeService();
             InitializeComponent();
+
+            pnlMazeView = this.Controls.Find("pnlMazeView", true)[0] as Panel;
+            pnlMazeView.Paint += PnlMazeView_Paint;
+            pnlMazeView.MouseClick += PnlMazeView_MouseClick;
         }
 
         private void InitializeComponent()
@@ -37,7 +51,7 @@ namespace MazeGen
             fileMenu.DropDownItems.Add(exitItem);
 
             var helpMenu = new ToolStripMenuItem("Справка");
-            var aboutItem = new ToolStripMenuItem("О программе");
+            var aboutItem = new ToolStripMenuItem("О разработчиках");
             aboutItem.Click += (s, e) => ShowAbout();
             helpMenu.DropDownItems.Add(aboutItem);
 
@@ -280,7 +294,7 @@ namespace MazeGen
             var pnlRight = new Panel
             {
                 Location = new System.Drawing.Point(370, 30),
-                Size = new System.Drawing.Size(810, 650),
+                Size = new System.Drawing.Size(810, 640),
                 BorderStyle = BorderStyle.FixedSingle,
                 Name = "pnlMazeView",
                 BackColor = System.Drawing.Color.White
@@ -289,18 +303,147 @@ namespace MazeGen
         }
 
         private void CreateTemplate()
-        {
+        {   
+            int width = (int)((NumericUpDown)Controls.Find("numWidth", true)[0]).Value;
+            int height = (int)((NumericUpDown)Controls.Find("numHeight", true)[0]).Value;
+            currentMaze = mazeService.CreateTemplate(width, height, currentTheme);
+            manualEntrance = null;
+            manualExit = null;
+            pathCells.Clear();
+            pnlMazeView.Invalidate();
             MessageBox.Show("Шаблон лабиринта создан!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void ApplyPlacement()
         {
-            MessageBox.Show("Параметры расстановки применены!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var rbAuto = Controls.Find("rbAuto", true)[0] as RadioButton;
+            if (rbAuto.Checked)
+            {
+                mazeService.PlaceEntranceExit(currentMaze, true);
+                manualEntrance = null;
+                manualExit = null;
+                pnlMazeView.Invalidate();
+                MessageBox.Show("Вход и выход расставлены автоматически!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                isPlacingEntranceExit = true;
+                placementStep = 0;
+                manualEntrance = null;
+                manualExit = null;
+                pnlMazeView.Invalidate();
+                MessageBox.Show("Выберите клетку входа, затем клетку выхода на шаблоне.", "Ручная расстановка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        // Визуализация лабиринта
+        private void PnlMazeView_Paint(object sender, PaintEventArgs e)
+        {
+            if (currentMaze == null) return;
+            var g = e.Graphics;
+            int w = pnlMazeView.Width / currentMaze.Width;
+            int h = pnlMazeView.Height / currentMaze.Height;
+
+            for (int x = 0; x < currentMaze.Width; x++)
+            {
+                for (int y = 0; y < currentMaze.Height; y++)
+                {
+                    Rectangle cellRect = new Rectangle(x * w, y * h, w, h);
+
+                    // Пройденный путь
+                    if (pathCells.Contains(new Point(x, y)))
+                        g.FillRectangle(Brushes.LightSkyBlue, cellRect);
+                    // Вход
+                    else if (currentMaze.Entrance == new Point(x, y))
+                        g.FillRectangle(Brushes.LimeGreen, cellRect);
+                    // Выход
+                    else if (currentMaze.Exit == new Point(x, y))
+                        g.FillRectangle(Brushes.Red, cellRect);
+                    // Проход
+                    else if (currentMaze.Grid[x, y] == 1)
+                        g.FillRectangle(Brushes.White, cellRect);
+                    // Стена
+                    else
+                        g.FillRectangle(Brushes.Black, cellRect);
+
+                    g.DrawRectangle(Pens.Gray, cellRect);
+                }
+            }
+            // Выделение входа и выхода
+            if (isPlacingEntranceExit)
+            {
+                if (manualEntrance.HasValue)
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(128, Color.LimeGreen)), manualEntrance.Value.X * w, manualEntrance.Value.Y * h, w, h);
+                if (manualExit.HasValue)
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(128, Color.Red)), manualExit.Value.X * w, manualExit.Value.Y * h, w, h);
+            }
+        }
+
+        // Клик для ручной расстановки
+        private void PnlMazeView_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (!isPlacingEntranceExit || currentMaze == null) return;
+            int cellW = pnlMazeView.Width / currentMaze.Width;
+            int cellH = pnlMazeView.Height / currentMaze.Height;
+            int x = e.X / cellW;
+            int y = e.Y / cellH;
+            var pt = new Point(x, y);
+
+            if (placementStep == 0)
+            {
+                manualEntrance = pt;
+                placementStep = 1;
+                pnlMazeView.Invalidate();
+                MessageBox.Show("Теперь выберите клетку выхода.", "Ручная расстановка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else if (placementStep == 1)
+            {
+                manualExit = pt;
+                try
+                {
+                    mazeService.PlaceEntranceExit(currentMaze, false, manualEntrance, manualExit);
+                    isPlacingEntranceExit = false;
+                    placementStep = 0;
+                    pnlMazeView.Invalidate();
+                    MessageBox.Show("Вход и выход успешно расставлены!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    placementStep = 0;
+                    manualEntrance = null;
+                    manualExit = null;
+                    pnlMazeView.Invalidate();
+                }
+            }
         }
 
         private void GenerateMaze()
         {
-            MessageBox.Show("Лабиринт сгенерирован!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (currentMaze == null)
+            {
+                MessageBox.Show("Сначала создайте шаблон лабиринта.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (currentMaze.Entrance == Point.Empty || currentMaze.Exit == Point.Empty)
+            {
+                MessageBox.Show("Сначала расставьте вход и выход.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var rbPrim = Controls.Find("rbPrim", true)[0] as RadioButton;
+            string algorithm = rbPrim.Checked ? "Прима" : "Эллера";
+
+            try
+            {
+                mazeService.GenerateMaze(currentMaze, algorithm);
+                pnlMazeView.Invalidate();
+                MessageBox.Show($"Лабиринт сгенерирован алгоритмом {algorithm}!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка генерации: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void SaveMaze()

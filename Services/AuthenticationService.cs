@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using MazeGen.Models;
 
 namespace MazeGen.Services

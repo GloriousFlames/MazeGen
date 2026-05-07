@@ -36,7 +36,7 @@ namespace MazeGen
             fileMenu.DropDownItems.Add(exitItem);
 
             var helpMenu = new ToolStripMenuItem("Справка");
-            var aboutItem = new ToolStripMenuItem("О программе");
+            var aboutItem = new ToolStripMenuItem("О разработчиках");
             aboutItem.Click += (s, e) => ShowAbout();
             helpMenu.DropDownItems.Add(aboutItem);
 
