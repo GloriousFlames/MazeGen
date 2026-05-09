@@ -1,12 +1,16 @@
-using System;
-using System.Windows.Forms;
+using MazeGen.Services;
 
 namespace MazeGen
 {
     public partial class LoadMazeForm : Form
     {
-        public LoadMazeForm()
+        private MazeService mazeService;
+        private PlayerMainForm playerForm;
+
+        public LoadMazeForm(MazeService mazeService, PlayerMainForm playerForm)
         {
+            this.mazeService = mazeService;
+            this.playerForm = playerForm;
             InitializeComponent();
         }
 
@@ -46,7 +50,12 @@ namespace MazeGen
                 Size = new System.Drawing.Size(150, 20),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
-            cmbMazes.Items.AddRange(new object[] { "Лабиринт 1", "Лабиринт 2", "Лабиринт 3" });
+            var mazes = mazeService.GetAllMazes();
+            cmbMazes.Items.Clear();
+            foreach (var maze in mazes)
+            {
+                cmbMazes.Items.Add(maze.Name);
+            }
             this.Controls.Add(cmbMazes);
 
             var btnLoad = new Button
@@ -69,8 +78,17 @@ namespace MazeGen
                 MessageBox.Show("Выберите лабиринт!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            MessageBox.Show($"Лабиринт '{cmb.SelectedItem}' загружен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.Close();
+            var selectedMaze = mazeService.GetAllMazes().FirstOrDefault(m => m.Name == cmb.SelectedItem.ToString());
+            if (selectedMaze != null)
+            {
+                playerForm.LoadMazeFromForm(selectedMaze);
+                MessageBox.Show($"Лабиринт '{cmb.SelectedItem}' загружен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Лабиринт не найден!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

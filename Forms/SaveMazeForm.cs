@@ -1,3 +1,5 @@
+using MazeGen.Services;
+using MazeGen.Models;
 using System;
 using System.Windows.Forms;
 
@@ -5,14 +7,20 @@ namespace MazeGen
 {
     public partial class SaveMazeForm : Form
     {
-        public SaveMazeForm()
+        // Добавьте поле для MazeService и Maze
+        private MazeService mazeService;
+        private Maze mazeToSave;
+
+        public SaveMazeForm(MazeService mazeService, Maze mazeToSave)
         {
+            this.mazeService = mazeService;
+            this.mazeToSave = mazeToSave;
             InitializeComponent();
         }
 
         private void InitializeComponent()
         {
-            this.Text = "Сохранить лабиринт";
+            this.Text = "Сохранение лабиринта";
             this.Size = new System.Drawing.Size(400, 200);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -21,7 +29,7 @@ namespace MazeGen
             // Заголовок
             var lblTitle = new Label
             {
-                Text = "Загрузка лабиринта",
+                Text = "Сохранение лабиринта",
                 Font = new System.Drawing.Font("Segoe UI", 16),
                 Location = new System.Drawing.Point(100, 10),
                 Size = new System.Drawing.Size(80, 30),
@@ -67,6 +75,8 @@ namespace MazeGen
                 MessageBox.Show("Введите название лабиринта!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            mazeToSave.Name = txtName.Text.Trim();
+            mazeService.SaveMaze(mazeToSave);
             MessageBox.Show($"Лабиринт '{txtName.Text}' сохранен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
         }

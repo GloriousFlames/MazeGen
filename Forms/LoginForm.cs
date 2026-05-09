@@ -8,9 +8,11 @@ namespace MazeGen
     public partial class LoginForm : Form
     {
         private AuthenticationService authService;
+        private MazeService mazeService;
 
-        public LoginForm()
+        public LoginForm(MazeService mazeService)
         {
+            this.mazeService = mazeService;
             InitializeComponent();
             authService = new AuthenticationService();
         }
@@ -125,15 +127,13 @@ namespace MazeGen
             if (user != null)
             {
                 this.Hide();
-                if (user.Role == UserRole.Admin)
+                if (user.Id == 1)
                 {
-                    var adminForm = new AdminMainForm(user);
-                    adminForm.Show();
+                    LoginAsAdmin(user);
                 }
                 else
                 {
-                    var playerForm = new PlayerMainForm(user);
-                    playerForm.Show();
+                    LoginAsPlayer(user);
                 }
             }
             else
@@ -147,6 +147,22 @@ namespace MazeGen
         {
             var registerForm = new RegisterForm();
             registerForm.ShowDialog(this);
+        }
+
+        private void LoginAsAdmin(User user)
+        {
+            var adminForm = new AdminMainForm(user, mazeService);
+            adminForm.Show();
+            this.Hide();
+            //adminForm.FormClosed += (s, e) => this.Show();
+        }
+
+        private void LoginAsPlayer(User user)
+        {
+            var playerForm = new PlayerMainForm(user, mazeService);
+            playerForm.Show();
+            this.Hide();
+            playerForm.FormClosed += (s, e) => this.Show();
         }
     }
 }

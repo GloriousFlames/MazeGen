@@ -1,5 +1,4 @@
-using System;
-using System.Windows.Forms;
+using MazeGen.Services;
 
 namespace MazeGen
 {
@@ -10,13 +9,17 @@ namespace MazeGen
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-        //    Application.Run(new LoginForm());
-        //    Application.Run(new RegisterForm());
-        //    Application.Run(new AboutForm());
-            Application.Run(new AdminMainForm(new Models.User()));
-        //    Application.Run(new LoadMazeForm());
-        //    Application.Run(new PlayerMainForm(new Models.User()));
-        //    Application.Run(new SaveMazeForm());
+
+            var mazeService = new MazeService();
+            //var loginForm = new LoginForm(mazeService);
+            //Application.Run(loginForm);
+            //    Application.Run(new LoginForm());
+            //    Application.Run(new RegisterForm());
+            //    Application.Run(new AboutForm());
+            Application.Run(new AdminMainForm(new Models.User(), mazeService));
+            //    Application.Run(new LoadMazeForm());
+            //   Application.Run(new PlayerMainForm(new Models.User()));
+            //    Application.Run(new SaveMazeForm());
         }
     }
 }

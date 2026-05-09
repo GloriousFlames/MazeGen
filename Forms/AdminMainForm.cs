@@ -22,10 +22,10 @@ namespace MazeGen
 
         private Panel pnlMazeView;
 
-        public AdminMainForm(User user)
+        public AdminMainForm(User user, MazeService mazeService)
         {
             currentUser = user;
-            mazeService = new MazeService();
+            this.mazeService = mazeService;
             InitializeComponent();
 
             pnlMazeView = this.Controls.Find("pnlMazeView", true)[0] as Panel;
@@ -49,6 +49,10 @@ namespace MazeGen
             var exitItem = new ToolStripMenuItem("Выход");
             exitItem.Click += (s, e) => this.Close();
             fileMenu.DropDownItems.Add(exitItem);
+
+            var authItem = new ToolStripMenuItem("Авторизация");
+            authItem.Click += (s, e) => ShowAuth();
+            fileMenu.DropDownItems.Insert(0, authItem); // В начало меню "Файл"
 
             var helpMenu = new ToolStripMenuItem("Справка");
             var aboutItem = new ToolStripMenuItem("О разработчиках");
@@ -184,7 +188,8 @@ namespace MazeGen
                 Location = new System.Drawing.Point(70, 235),
                 Size = new System.Drawing.Size(200, 35),
                 BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new System.Drawing.Font("Segoe UI", 12),
+                Name = "btnCreateTemplate"
             };
             btnCreateTemplate.Click += (s, e) => CreateTemplate();
             pnlLeft.Controls.Add(btnCreateTemplate);
@@ -233,7 +238,9 @@ namespace MazeGen
                 Location = new System.Drawing.Point(100, 360),
                 Size = new System.Drawing.Size(150, 35),
                 BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new System.Drawing.Font("Segoe UI", 12),
+                Name = "btnApplyPlacement",
+                Enabled = false // изначально недоступна
             };
             btnApplyPlacement.Click += (s, e) => ApplyPlacement();
             pnlLeft.Controls.Add(btnApplyPlacement);
@@ -283,10 +290,24 @@ namespace MazeGen
                 Location = new System.Drawing.Point(70, 480),
                 Size = new System.Drawing.Size(200, 35),
                 BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new System.Drawing.Font("Segoe UI", 12),
+                Name = "btnGenerateMaze",
+                Enabled = false
             };
             btnGenerateMaze.Click += (s, e) => GenerateMaze();
             pnlLeft.Controls.Add(btnGenerateMaze);
+
+            // Тестовая кнопка для перехода между режимами
+            var btnSwitchMode = new Button
+            {
+                Text = "Сменить роль",
+                Location = new System.Drawing.Point(70, 580),
+                Size = new System.Drawing.Size(200, 35),
+                BackColor = System.Drawing.Color.Ivory,
+                Font = new System.Drawing.Font("Segoe UI", 12)
+            };
+            btnSwitchMode.Click += (s, e) => SwitchMode();
+            pnlLeft.Controls.Add(btnSwitchMode);
 
             this.Controls.Add(pnlLeft);
 
@@ -306,11 +327,13 @@ namespace MazeGen
         {   
             int width = (int)((NumericUpDown)Controls.Find("numWidth", true)[0]).Value;
             int height = (int)((NumericUpDown)Controls.Find("numHeight", true)[0]).Value;
-            currentMaze = mazeService.CreateTemplate(width, height, currentTheme);
+            currentMaze = mazeService.CreateTemplate(width, height);
             manualEntrance = null;
             manualExit = null;
             pathCells.Clear();
             pnlMazeView.Invalidate();
+            Controls.Find("btnApplyPlacement", true)[0].Enabled = true;
+            Controls.Find("btnGenerateMaze", true)[0].Enabled = false;
             MessageBox.Show("Шаблон лабиринта создан!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -323,6 +346,7 @@ namespace MazeGen
                 manualEntrance = null;
                 manualExit = null;
                 pnlMazeView.Invalidate();
+                Controls.Find("btnGenerateMaze", true)[0].Enabled = true;
                 MessageBox.Show("Вход и выход расставлены автоматически!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
@@ -405,6 +429,7 @@ namespace MazeGen
                     isPlacingEntranceExit = false;
                     placementStep = 0;
                     pnlMazeView.Invalidate();
+                    Controls.Find("btnGenerateMaze", true)[0].Enabled = true;
                     MessageBox.Show("Вход и выход успешно расставлены!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -448,7 +473,7 @@ namespace MazeGen
 
         private void SaveMaze()
         {
-            var form = new SaveMazeForm();
+            var form = new SaveMazeForm(mazeService, currentMaze);
             form.ShowDialog(this);
         }
 
@@ -456,6 +481,22 @@ namespace MazeGen
         {
             var form = new AboutForm();
             form.ShowDialog(this);
+        }
+
+        private void ShowAuth()
+        {
+            var authForm = new LoginForm(mazeService);
+            authForm.Show();
+            this.Close();
+        }
+
+        // Тестовый переход между режимами
+        private void SwitchMode()
+        {
+            var playerForm = new PlayerMainForm(currentUser, mazeService);
+            playerForm.Show();
+            this.Hide();
+            playerForm.FormClosed += (s, e) => this.Show();
         }
     }
 }

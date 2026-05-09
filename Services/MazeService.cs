@@ -6,7 +6,7 @@ namespace MazeGen.Services
     {
         private List<Maze> mazes = new List<Maze>();
         private Random rand = new Random();
-        public Maze CreateTemplate(int width, int height, Theme theme)
+        public Maze CreateTemplate(int width, int height)
         {
             if (width % 2 == 0) width++;
             if (height % 2 == 0) height++;
@@ -20,7 +20,6 @@ namespace MazeGen.Services
                 Id = mazes.Count + 1,
                 Width = width,
                 Height = height,
-                Theme = theme,
                 Grid = grid,
                 //CreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
@@ -312,5 +311,105 @@ namespace MazeGen.Services
         {
             mazes.Add(maze);
         }
+
+        // Волновой алгоритм
+        public List<Point> FindPathWave(Maze maze)
+        {
+            int w = maze.Width, h = maze.Height;
+            var grid = maze.Grid;
+            var start = maze.Entrance;
+            var end = maze.Exit;
+
+            var queue = new Queue<Point>();
+            var visited = new bool[w, h];
+            // Откуда пришли в каждую точку
+            var parent = new Dictionary<Point, Point>();
+            
+            queue.Enqueue(start);
+            visited[start.X, start.Y] = true;
+            
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                if (current == end)
+                    return RestorePath(parent, start, end);
+                
+                foreach (var (dx, dy) in new[] { (1, 0), (-1, 0), (0, 1), (0, -1) })
+                {
+                    int nx = current.X + dx, ny = current.Y + dy;
+                    if (nx >= 0 && nx < w && ny >= 0 && ny < h && grid[nx, ny] == 1 && !visited[nx, ny])
+                    {
+                        visited[nx, ny] = true;
+                        parent[new Point(nx, ny)] = current;
+                        queue.Enqueue(new Point(nx, ny));
+                    }
+                }
+            }
+            return new List<Point>();
+        }
+        
+        // Восстановление пути
+        private List<Point> RestorePath(Dictionary<Point, Point> parent, Point start, Point end)
+        {
+            var path = new List<Point>();
+            var current = end;
+            while (current != start && parent.ContainsKey(current))
+            {
+                path.Add(current);
+                current = parent[current];
+            }
+            path.Add(start);
+            path.Reverse();
+            return path;
+        }
+
+        // Алгоритм правой руки
+        public List<Point> FindPathRightHand(Maze maze)
+        {
+            int w = maze.Width, h = maze.Height;
+            var grid = maze.Grid;
+            var path = new List<Point>();
+            var current = maze.Entrance;
+            var end = maze.Exit;
+            
+            // Направления
+            var directions = new[] { (1, 0), (0, 1), (-1, 0), (0, -1) };
+            int dirIndex = 0;
+            
+            var visited = new HashSet<Point> { current };
+            path.Add(current);
+            
+            while (current != end && path.Count < w * h)
+            {
+                bool moved = false;
+                
+                // Пытаемся идти вперед, потом поворачиваем налево
+                for (int i = 0; i < 4; i++)
+                {
+                    int tryDir = (dirIndex - i + 4) % 4; // сначала налево
+                    var (dx, dy) = directions[tryDir];
+                    int nx = current.X + dx, ny = current.Y + dy;
+                    
+                    if (nx >= 0 && nx < w && ny >= 0 && ny < h && grid[nx, ny] == 1)
+                    {
+                        current = new Point(nx, ny);
+                        if (!visited.Contains(current))
+                        {
+                            visited.Add(current);
+                            path.Add(current);
+                        }
+                        dirIndex = tryDir;
+                        moved = true;
+                        break;
+                    }
+                }
+                
+                if (!moved) break;
+            }
+            
+            return current == end ? path : new List<Point>();
+        }
+
+        
     }
 }

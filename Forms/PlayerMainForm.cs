@@ -1,7 +1,6 @@
-using System;
-using System.Windows.Forms;
 using MazeGen.Models;
 using MazeGen.Services;
+using System.Windows.Forms;
 
 namespace MazeGen
 {
@@ -10,11 +9,19 @@ namespace MazeGen
         private User currentUser;
         private MazeService mazeService;
         private Theme currentTheme = Theme.Forest;
+        private Panel pnlMazeView;
+        
+        // Состояние прохождения
+        private Maze currentMaze;
+        private List<Point> currentPath = new List<Point>();
+        private int currentPathIndex = 0;
+        private bool isPlaying = false;
+        private System.Windows.Forms.Timer gameTimer;
 
-        public PlayerMainForm(User user)
+        public PlayerMainForm(User user, MazeService mazeService)
         {
             currentUser = user;
-            mazeService = new MazeService();
+            this.mazeService = mazeService;
             InitializeComponent();
         }
 
@@ -34,6 +41,9 @@ namespace MazeGen
             var exitItem = new ToolStripMenuItem("Выход");
             exitItem.Click += (s, e) => this.Close();
             fileMenu.DropDownItems.Add(exitItem);
+            var authItem = new ToolStripMenuItem("Авторизация");
+            authItem.Click += (s, e) => ShowAuth();
+            fileMenu.DropDownItems.Insert(0, authItem);
 
             var helpMenu = new ToolStripMenuItem("Справка");
             var aboutItem = new ToolStripMenuItem("О разработчиках");
@@ -44,7 +54,6 @@ namespace MazeGen
             menuStrip.Items.Add(helpMenu);
             this.MainMenuStrip = menuStrip;
             this.Controls.Add(menuStrip);
-
 
             // Левая панель с параметрами
             var pnlLeft = new Panel
@@ -85,7 +94,7 @@ namespace MazeGen
                     AutoSize = true
                 };
                 int idxLeft = i;
-                rbLeft.CheckedChanged += (s, e) => { if ((s as RadioButton).Checked) currentTheme = themeValues[idxLeft]; };
+                rbLeft.CheckedChanged += (s, e) => { if ((s as RadioButton).Checked) { currentTheme = themeValues[idxLeft]; pnlMazeView.Invalidate(); } };
                 themeGroup.Controls.Add(rbLeft);
                 i++;
 
@@ -98,7 +107,7 @@ namespace MazeGen
                     AutoSize = true
                 };
                 int idxRight = i;
-                rbRight.CheckedChanged += (s, e) => { if ((s as RadioButton).Checked) currentTheme = themeValues[idxRight]; };
+                rbRight.CheckedChanged += (s, e) => { if ((s as RadioButton).Checked) { currentTheme = themeValues[idxRight]; pnlMazeView.Invalidate(); } };
                 themeGroup.Controls.Add(rbRight);
             }
             pnlLeft.Controls.Add(themeGroup);
@@ -147,7 +156,8 @@ namespace MazeGen
                 Location = new System.Drawing.Point(70, 190),
                 Size = new System.Drawing.Size(200, 35),
                 BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new System.Drawing.Font("Segoe UI", 12),
+                Name = "btnApply"
             };
             btnApply.Click += (s, e) => ApplyMode();
             pnlLeft.Controls.Add(btnApply);
@@ -158,9 +168,11 @@ namespace MazeGen
                 Location = new System.Drawing.Point(70, 235),
                 Size = new System.Drawing.Size(200, 35),
                 BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new System.Drawing.Font("Segoe UI", 12),
+                Name = "btnStart",
+                Enabled = false
             };
-            btnStart.Click += (s, e) => ApplyMode();
+            btnStart.Click += (s, e) => StartGame();
             pnlLeft.Controls.Add(btnStart);
 
             var btnMakeStep = new Button
@@ -169,18 +181,23 @@ namespace MazeGen
                 Location = new System.Drawing.Point(70, 280),
                 Size = new System.Drawing.Size(200, 35),
                 BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new System.Drawing.Font("Segoe UI", 12),
+                Name = "btnMakeStep",
+                Visible = false,
+                Enabled = false
             };
             btnMakeStep.Click += (s, e) => MakeStep();
             pnlLeft.Controls.Add(btnMakeStep);
 
-            // Блок выбора алгоритма прохождения
+            // Блок выбора алгоритма прохождения (видимый только для авто)
             var lblAlgorithm = new Label
             {
-                Text = "Алгоритм прохождеиня",
+                Text = "Алгоритм прохождения",
                 Location = new System.Drawing.Point(10, 320),
                 Size = new System.Drawing.Size(200, 20),
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new System.Drawing.Font("Segoe UI", 12),
+                Name = "lblAlgorithm",
+                Visible = false
             };
             pnlLeft.Controls.Add(lblAlgorithm);
 
@@ -188,7 +205,9 @@ namespace MazeGen
             {
                 Text = "",
                 Location = new System.Drawing.Point(10, 335),
-                Size = new System.Drawing.Size(320, 50)
+                Size = new System.Drawing.Size(320, 50),
+                Name = "algorithmGroup",
+                Visible = false
             };
 
             var rbWave = new RadioButton
@@ -213,13 +232,15 @@ namespace MazeGen
             algorithmGroup.Controls.Add(rbHand);
             pnlLeft.Controls.Add(algorithmGroup);
 
-            // Блок выбора алгоритма прохождения
+            // Блок выбора режима автоматического прохождения (видимый только для авто)
             var lblMode = new Label
             {
                 Text = "Режим автоматического прохождения",
                 Location = new System.Drawing.Point(10, 400),
                 Size = new System.Drawing.Size(250, 20),
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new System.Drawing.Font("Segoe UI", 12),
+                Name = "lblMode",
+                Visible = false
             };
             pnlLeft.Controls.Add(lblMode);
 
@@ -227,7 +248,9 @@ namespace MazeGen
             {
                 Text = "",
                 Location = new System.Drawing.Point(10, 415),
-                Size = new System.Drawing.Size(320, 50)
+                Size = new System.Drawing.Size(320, 50),
+                Name = "modeGroup",
+                Visible = false
             };
 
             var rbStep = new RadioButton
@@ -252,13 +275,15 @@ namespace MazeGen
             modeGroup.Controls.Add(rbDelay);
             pnlLeft.Controls.Add(modeGroup);
 
-            // Блок выбора скорости прохождения
+            // Блок выбора скорости прохождения (видимый только для режима с задержкой)
             var lblSpeed = new Label
             {
                 Text = "Скорость прохождения",
                 Location = new System.Drawing.Point(10, 480),
                 Size = new System.Drawing.Size(200, 20),
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new System.Drawing.Font("Segoe UI", 12),
+                Name = "lblSpeed",
+                Visible = false
             };
             pnlLeft.Controls.Add(lblSpeed);
 
@@ -266,7 +291,9 @@ namespace MazeGen
             {
                 Text = "",
                 Location = new System.Drawing.Point(10, 500),
-                Size = new System.Drawing.Size(320, 80)
+                Size = new System.Drawing.Size(320, 80),
+                Name = "speedGroup",
+                Visible = false
             };
 
             var tbSpeed = new TrackBar
@@ -328,7 +355,7 @@ namespace MazeGen
             this.Controls.Add(pnlLeft);
 
             // Правая панель для визуализации
-            var pnlRight = new Panel
+            pnlMazeView = new Panel
             {
                 Location = new System.Drawing.Point(370, 30),
                 Size = new System.Drawing.Size(810, 650),
@@ -336,33 +363,244 @@ namespace MazeGen
                 Name = "pnlMazeView",
                 BackColor = System.Drawing.Color.White
             };
-            this.Controls.Add(pnlRight);
+            pnlMazeView.Paint += PnlMazeView_Paint;
+            pnlMazeView.MouseClick += PnlMazeView_MouseClick;
+            this.Controls.Add(pnlMazeView);
+
+            // Инициализация таймера для автоматического прохождения
+            gameTimer = new System.Windows.Forms.Timer();
+            gameTimer.Tick += GameTimer_Tick;
+        }
+
+        private void PnlMazeView_Paint(object sender, PaintEventArgs e)
+        {
+            if (currentMaze == null) return;
+            var g = e.Graphics;
+            int w = pnlMazeView.Width / currentMaze.Width;
+            int h = pnlMazeView.Height / currentMaze.Height;
+
+            for (int x = 0; x < currentMaze.Width; x++)
+            {
+                for (int y = 0; y < currentMaze.Height; y++)
+                {
+                    Rectangle cellRect = new Rectangle(x * w, y * h, w, h);
+
+                    // Вход
+                    if (currentMaze.Entrance == new Point(x, y))
+                        g.FillRectangle(Brushes.LimeGreen, cellRect);
+                    // Выход
+                    else if (currentMaze.Exit == new Point(x, y))
+                        g.FillRectangle(Brushes.Red, cellRect);
+                    // Проход
+                    else if (currentMaze.Grid[x, y] == 1)
+                        g.FillRectangle(Brushes.White, cellRect);
+                    // Стена
+                    else
+                        g.FillRectangle(Brushes.Black, cellRect);
+
+                    g.DrawRectangle(Pens.Gray, cellRect);
+                }
+            }
+
+            // Пройденный путь
+            if (currentPathIndex > 1 && currentPath.Count > 0)
+            {
+                for (int i = 0; i < currentPathIndex - 1; i++)
+                {
+                    var pt = currentPath[i];
+                    Rectangle cellRect = new Rectangle(pt.X * w, pt.Y * h, w, h);
+                    if (pt != currentMaze.Entrance && pt != currentMaze.Exit)
+                        g.FillRectangle(Brushes.LightSkyBlue, cellRect);
+                }
+            }
+
+            // Текущее положение персонажа
+            if (currentPathIndex > 0 && currentPath.Count > currentPathIndex - 1)
+            {
+                var pos = currentPath[currentPathIndex - 1];
+                Rectangle cellRect = new Rectangle(pos.X * w, pos.Y * h, w, h);
+                g.FillEllipse(Brushes.Gold, cellRect);
+                g.DrawEllipse(Pens.DarkGoldenrod, cellRect);
+            }
+        }
+
+        private void PnlMazeView_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (currentMaze == null || !isPlaying) return;
+            
+            var rbManual = Controls.Find("rbManual", true)[0] as RadioButton;
+            if (!rbManual.Checked) return;
+
+            int cellW = pnlMazeView.Width / currentMaze.Width;
+            int cellH = pnlMazeView.Height / currentMaze.Height;
+            int x = e.X / cellW;
+            int y = e.Y / cellH;
+            var pt = new Point(x, y);
+
+            if (currentMaze.Grid[x, y] == 1)
+            {
+                currentPathIndex++;
+                if (pt == currentMaze.Exit)
+                {
+                    MessageBox.Show("Вы прошли лабиринт!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    isPlaying = false;
+                }
+                pnlMazeView.Invalidate();
+            }
         }
 
         private void LoadMaze()
         {
-            var form = new LoadMazeForm();
+            var form = new LoadMazeForm(mazeService, this);
             form.ShowDialog(this);
         }
 
         private void ApplyMode()
         {
+            if (currentMaze == null)
+            {
+                MessageBox.Show("Сначала загрузите лабиринт.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var rbAuto = Controls.Find("rbAuto", true)[0] as RadioButton;
+            var lblAlgorithm = Controls.Find("lblAlgorithm", true)[0];
+            var algorithmGroup = Controls.Find("algorithmGroup", true)[0];
+            var lblMode = Controls.Find("lblMode", true)[0];
+            var modeGroup = Controls.Find("modeGroup", true)[0];
+            var lblSpeed = Controls.Find("lblSpeed", true)[0];
+            var speedGroup = Controls.Find("speedGroup", true)[0];
+            var btnStart = Controls.Find("btnStart", true)[0];
+
+            if (rbAuto.Checked)
+            {
+                lblAlgorithm.Visible = true;
+                algorithmGroup.Visible = true;
+                lblMode.Visible = true;
+                modeGroup.Visible = true;
+
+                var rbDelay = Controls.Find("rbDelay", true)[0] as RadioButton;
+                lblSpeed.Visible = rbDelay.Checked;
+                speedGroup.Visible = rbDelay.Checked;
+            }
+            else
+            {
+                lblAlgorithm.Visible = false;
+                algorithmGroup.Visible = false;
+                lblMode.Visible = false;
+                modeGroup.Visible = false;
+                lblSpeed.Visible = false;
+                speedGroup.Visible = false;
+            }
+
+            btnStart.Enabled = true;
             MessageBox.Show("Режим применен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void StartGame()
         {
-            MessageBox.Show("Игра началась!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (currentMaze == null) return;
+
+            var rbAuto = Controls.Find("rbAuto", true)[0] as RadioButton;
+            var rbManual = Controls.Find("rbManual", true)[0] as RadioButton;
+
+            currentPathIndex = 1;
+            currentPath = new List<Point> { currentMaze.Entrance };
+            isPlaying = true;
+
+            if (rbManual.Checked)
+            {
+                MessageBox.Show("Нажимайте на клетки для движения от входа к выходу.", "Инструкция", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                pnlMazeView.Invalidate();
+            }
+            else if (rbAuto.Checked)
+            {
+                var rbWave = Controls.Find("rbWave", true)[0] as RadioButton;
+                string algorithm = rbWave.Checked ? "wave" : "righthand";
+                
+                if (algorithm == "wave")
+                    currentPath = mazeService.FindPathWave(currentMaze);
+                else
+                    currentPath = mazeService.FindPathRightHand(currentMaze);
+
+                if (currentPath.Count == 0)
+                {
+                    MessageBox.Show("Путь не найден!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    isPlaying = false;
+                    return;
+                }
+
+                var rbStep = Controls.Find("rbStep", true)[0] as RadioButton;
+                var btnMakeStep = Controls.Find("btnMakeStep", true)[0];
+                
+                if (rbStep.Checked)
+                {
+                    btnMakeStep.Visible = true;
+                    btnMakeStep.Enabled = true;
+                    pnlMazeView.Invalidate();
+                }
+                else
+                {
+                    var tbSpeed = Controls.Find("tbSpeed", true)[0] as TrackBar;
+                    int speed = tbSpeed.Value;
+                    int interval = speed == 1 ? 500 : (speed == 2 ? 250 : 100);
+                    gameTimer.Interval = interval;
+                    gameTimer.Start();
+                    pnlMazeView.Invalidate();
+                }
+            }
         }
+
         private void MakeStep()
         {
-            MessageBox.Show("Шаг сделан", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (currentPath.Count <= currentPathIndex) return;
+            currentPathIndex++;
+
+            if (currentPathIndex >= currentPath.Count || currentPath[currentPathIndex - 1] == currentMaze.Exit)
+            {
+                MessageBox.Show("Вы прошли лабиринт!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                isPlaying = false;
+                Controls.Find("btnMakeStep", true)[0].Visible = false;
+            }
+
+            pnlMazeView.Invalidate();
+        }
+
+        private void GameTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentPath.Count <= currentPathIndex || !isPlaying)
+            {
+                gameTimer.Stop();
+                MessageBox.Show("Вы прошли лабиринт!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                isPlaying = false;
+                return;
+            }
+
+            currentPathIndex++;
+            pnlMazeView.Invalidate();
         }
 
         private void ShowAbout()
         {
             var form = new AboutForm();
             form.ShowDialog(this);
+        }
+
+        private void ShowAuth()
+        {
+            // откроет форму авторизации и закроет текущую форму игрока
+            var authForm = new LoginForm(mazeService);
+            authForm.Show();
+            this.Close();
+        }
+
+        // Загрузкв лабиринта из формы
+        public void LoadMazeFromForm(Maze maze)
+        {
+            currentMaze = maze;
+            currentPathIndex = 0;
+            currentPath.Clear();
+            pnlMazeView.Invalidate();
         }
     }
 }
