@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MazeGen")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+583bb830138b6e2030d52bdb1e103d2e5b7c3b0a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4252ddd7aaacc72bef360a1e3a899dadc024a88c")]
 [assembly: System.Reflection.AssemblyProductAttribute("MazeGen")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MazeGen")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
