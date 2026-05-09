@@ -1,15 +1,16 @@
+using MazeGen.Data;
 using MazeGen.Services;
 
 namespace MazeGen
 {
     public partial class LoadMazeForm : Form
     {
-        private MazeService mazeService;
+        private Database db;
         private PlayerMainForm playerForm;
 
-        public LoadMazeForm(MazeService mazeService, PlayerMainForm playerForm)
+        public LoadMazeForm(Database db, PlayerMainForm playerForm)
         {
-            this.mazeService = mazeService;
+            this.db = db;
             this.playerForm = playerForm;
             InitializeComponent();
         }
@@ -50,7 +51,7 @@ namespace MazeGen
                 Size = new System.Drawing.Size(150, 20),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
-            var mazes = mazeService.GetAllMazes();
+            var mazes = db.GetAllMazes();
             cmbMazes.Items.Clear();
             foreach (var maze in mazes)
             {
@@ -78,7 +79,7 @@ namespace MazeGen
                 MessageBox.Show("Выберите лабиринт!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            var selectedMaze = mazeService.GetAllMazes().FirstOrDefault(m => m.Name == cmb.SelectedItem.ToString());
+            var selectedMaze = db.GetAllMazes().FirstOrDefault(m => m.Name == cmb.SelectedItem.ToString());
             if (selectedMaze != null)
             {
                 playerForm.LoadMazeFromForm(selectedMaze);

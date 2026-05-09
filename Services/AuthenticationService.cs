@@ -1,4 +1,5 @@
 using MazeGen.Models;
+using MazeGen.Data;
 
 namespace MazeGen.Services
 {
@@ -6,16 +7,17 @@ namespace MazeGen.Services
     {
         private List<User> users = new List<User>();
         private int nextUserId = 1;
+        private Database db;
 
-        public AuthenticationService()
+        public AuthenticationService(Database db)
         {
-            // Тестовый администратор
+            this.db = db;
+            // Администратор
             users.Add(new User
             {
                 Id = nextUserId++,
                 Login = "admin",
                 PasswordHash = HashPassword("admin"),
-                Role = UserRole.Admin
             });
         }
 
@@ -24,11 +26,13 @@ namespace MazeGen.Services
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
                 return null;
 
-            foreach (var user in users)
-            {
-                if (user.Login == login && VerifyPassword(password, user.PasswordHash))
-                    return user;
-            }
+            if (login.Equals("admin") && VerifyPassword(password, users[0].PasswordHash))
+                return users[0];
+
+            var user = db.GetUser(login);
+            if (user != null && VerifyPassword(password, user.PasswordHash))
+                return user;
+
             return null;
         }
 
@@ -43,19 +47,10 @@ namespace MazeGen.Services
             if (password.Length < 4 || password.Length > 16)
                 return false;
 
-            foreach (var user in users)
-            {
-                if (user.Login == login)
-                    return false;
-            }
+            if (db.GetUser(login) != null)
+                return false;
 
-            users.Add(new User
-            {
-                Id = nextUserId++,
-                Login = login,
-                PasswordHash = HashPassword(password),
-                Role = UserRole.Player
-            });
+            db.AddUser(new User { Login = login, PasswordHash = HashPassword(password) });
             return true;
         }
 

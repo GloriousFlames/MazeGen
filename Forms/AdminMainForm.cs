@@ -1,6 +1,4 @@
-using System;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
+using MazeGen.Data;
 using MazeGen.Models;
 using MazeGen.Services;
 
@@ -8,6 +6,7 @@ namespace MazeGen
 {
     public partial class AdminMainForm : Form
     {
+        private Database db;
         private User currentUser;
         private MazeService mazeService;
         private Theme currentTheme = Theme.Forest;
@@ -22,10 +21,11 @@ namespace MazeGen
 
         private Panel pnlMazeView;
 
-        public AdminMainForm(User user, MazeService mazeService)
+        public AdminMainForm(User user, Database db, MazeService ms)
         {
             currentUser = user;
-            this.mazeService = mazeService;
+            this.db = db;
+            mazeService = ms;
             InitializeComponent();
 
             pnlMazeView = this.Controls.Find("pnlMazeView", true)[0] as Panel;
@@ -35,7 +35,7 @@ namespace MazeGen
 
         private void InitializeComponent()
         {
-            this.Text = $"MazeGen - Администратор ({currentUser.Login})";
+            this.Text = "MazeGen - Администратор";
             this.Size = new System.Drawing.Size(1200, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
 
@@ -43,18 +43,21 @@ namespace MazeGen
             var menuStrip = new MenuStrip();
 
             var fileMenu = new ToolStripMenuItem("Файл");
+
             var saveMazeItem = new ToolStripMenuItem("Сохранить лабиринт");
             saveMazeItem.Click += (s, e) => SaveMaze();
             fileMenu.DropDownItems.Add(saveMazeItem);
+
             var exitItem = new ToolStripMenuItem("Выход");
-            exitItem.Click += (s, e) => this.Close();
+            exitItem.Click += (s, e) => Close();
             fileMenu.DropDownItems.Add(exitItem);
 
             var authItem = new ToolStripMenuItem("Авторизация");
-            authItem.Click += (s, e) => ShowAuth();
-            fileMenu.DropDownItems.Insert(0, authItem); // В начало меню "Файл"
+            authItem.Click += (s, e) => Close();
+            fileMenu.DropDownItems.Insert(0, authItem);
 
             var helpMenu = new ToolStripMenuItem("Справка");
+            
             var aboutItem = new ToolStripMenuItem("О разработчиках");
             aboutItem.Click += (s, e) => ShowAbout();
             helpMenu.DropDownItems.Add(aboutItem);
@@ -473,7 +476,7 @@ namespace MazeGen
 
         private void SaveMaze()
         {
-            var form = new SaveMazeForm(mazeService, currentMaze);
+            var form = new SaveMazeForm(db, currentMaze);
             form.ShowDialog(this);
         }
 
@@ -483,17 +486,10 @@ namespace MazeGen
             form.ShowDialog(this);
         }
 
-        private void ShowAuth()
-        {
-            var authForm = new LoginForm(mazeService);
-            authForm.Show();
-            this.Close();
-        }
-
         // Тестовый переход между режимами
         private void SwitchMode()
         {
-            var playerForm = new PlayerMainForm(currentUser, mazeService);
+            var playerForm = new PlayerMainForm(currentUser, db, mazeService);
             playerForm.Show();
             this.Hide();
             playerForm.FormClosed += (s, e) => this.Show();

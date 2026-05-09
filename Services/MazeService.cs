@@ -17,11 +17,9 @@ namespace MazeGen.Services
 
             return new Maze
             {
-                Id = mazes.Count + 1,
                 Width = width,
                 Height = height,
                 Grid = grid,
-                //CreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
         }
 

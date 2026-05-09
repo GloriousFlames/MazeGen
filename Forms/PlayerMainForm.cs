@@ -1,3 +1,4 @@
+using MazeGen.Data;
 using MazeGen.Models;
 using MazeGen.Services;
 using System.Windows.Forms;
@@ -6,6 +7,7 @@ namespace MazeGen
 {
     public partial class PlayerMainForm : Form
     {
+        private Database db;
         private User currentUser;
         private MazeService mazeService;
         private Theme currentTheme = Theme.Forest;
@@ -17,11 +19,12 @@ namespace MazeGen
         private int currentPathIndex = 0;
         private bool isPlaying = false;
         private System.Windows.Forms.Timer gameTimer;
-
-        public PlayerMainForm(User user, MazeService mazeService)
+        
+        public PlayerMainForm(User user, Database db, MazeService ms)
         {
             currentUser = user;
-            this.mazeService = mazeService;
+            this.db = db;
+            mazeService = ms;
             InitializeComponent();
         }
 
@@ -35,17 +38,21 @@ namespace MazeGen
             var menuStrip = new MenuStrip();
 
             var fileMenu = new ToolStripMenuItem("Файл");
+
             var loadMazeItem = new ToolStripMenuItem("Загрузить лабиринт");
             loadMazeItem.Click += (s, e) => LoadMaze();
             fileMenu.DropDownItems.Add(loadMazeItem);
+
             var exitItem = new ToolStripMenuItem("Выход");
-            exitItem.Click += (s, e) => this.Close();
+            exitItem.Click += (s, e) => Close();
             fileMenu.DropDownItems.Add(exitItem);
+            
             var authItem = new ToolStripMenuItem("Авторизация");
-            authItem.Click += (s, e) => ShowAuth();
+            authItem.Click += (s, e) => Close();
             fileMenu.DropDownItems.Insert(0, authItem);
 
             var helpMenu = new ToolStripMenuItem("Справка");
+            
             var aboutItem = new ToolStripMenuItem("О разработчиках");
             aboutItem.Click += (s, e) => ShowAbout();
             helpMenu.DropDownItems.Add(aboutItem);
@@ -451,7 +458,7 @@ namespace MazeGen
 
         private void LoadMaze()
         {
-            var form = new LoadMazeForm(mazeService, this);
+            var form = new LoadMazeForm(db, this);
             form.ShowDialog(this);
         }
 
@@ -586,15 +593,7 @@ namespace MazeGen
             form.ShowDialog(this);
         }
 
-        private void ShowAuth()
-        {
-            // откроет форму авторизации и закроет текущую форму игрока
-            var authForm = new LoginForm(mazeService);
-            authForm.Show();
-            this.Close();
-        }
-
-        // Загрузкв лабиринта из формы
+        // Отображение лабиринта
         public void LoadMazeFromForm(Maze maze)
         {
             currentMaze = maze;

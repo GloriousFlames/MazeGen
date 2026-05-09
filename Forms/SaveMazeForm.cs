@@ -1,5 +1,6 @@
-using MazeGen.Services;
+using MazeGen.Data;
 using MazeGen.Models;
+using MazeGen.Services;
 using System;
 using System.Windows.Forms;
 
@@ -10,14 +11,14 @@ namespace MazeGen
         // Добавьте поле для MazeService и Maze
         private MazeService mazeService;
         private Maze mazeToSave;
+        private Database db;
 
-        public SaveMazeForm(MazeService mazeService, Maze mazeToSave)
+        public SaveMazeForm(Database db, Maze mazeToSave)
         {
-            this.mazeService = mazeService;
+            this.db = db;
             this.mazeToSave = mazeToSave;
             InitializeComponent();
         }
-
         private void InitializeComponent()
         {
             this.Text = "Сохранение лабиринта";
@@ -76,7 +77,7 @@ namespace MazeGen
                 return;
             }
             mazeToSave.Name = txtName.Text.Trim();
-            mazeService.SaveMaze(mazeToSave);
+            db.SaveMaze(mazeToSave);
             MessageBox.Show($"Лабиринт '{txtName.Text}' сохранен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
         }
