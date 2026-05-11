@@ -73,7 +73,7 @@ namespace MazeGen
 
         private void Load()
         {
-            var cmb = this.Controls["cmbMazes"] as ComboBox;
+            var cmb = Controls["cmbMazes"] as ComboBox;
             if (cmb.SelectedIndex == -1)
             {
                 MessageBox.Show("Выберите лабиринт!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -84,7 +84,7 @@ namespace MazeGen
             {
                 playerForm.LoadMazeFromForm(selectedMaze);
                 MessageBox.Show($"Лабиринт '{cmb.SelectedItem}' загружен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.Close();
+                Close();
             }
             else
             {

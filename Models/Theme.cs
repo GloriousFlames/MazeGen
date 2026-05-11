@@ -3,8 +3,8 @@
     public enum Theme
     {
         Forest,
-        Plain,
-        Mountains,
+        Dungeon,
+        City,
         Desert
     }
 }

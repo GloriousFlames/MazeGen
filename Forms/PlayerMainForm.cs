@@ -1,7 +1,7 @@
 using MazeGen.Data;
 using MazeGen.Models;
 using MazeGen.Services;
-using System.Windows.Forms;
+using System.Reflection;
 
 namespace MazeGen
 {
@@ -19,6 +19,9 @@ namespace MazeGen
         private int currentPathIndex = 0;
         private bool isPlaying = false;
         private System.Windows.Forms.Timer gameTimer;
+
+        // Изображения темы
+        private Dictionary<string, Bitmap> cellImages = new();
         
         public PlayerMainForm(User user, Database db, MazeService ms)
         {
@@ -26,13 +29,14 @@ namespace MazeGen
             this.db = db;
             mazeService = ms;
             InitializeComponent();
+            LoadThemeImages();
         }
 
         private void InitializeComponent()
         {
-            this.Text = $"MazeGen - Игрок ({currentUser.Login})";
-            this.Size = new System.Drawing.Size(1200, 700);
-            this.StartPosition = FormStartPosition.CenterScreen;
+            Text = $"MazeGen - Игрок ({currentUser.Login})";
+            Size = new Size(1200, 720);
+            StartPosition = FormStartPosition.CenterScreen;
 
             // Меню
             var menuStrip = new MenuStrip();
@@ -65,8 +69,8 @@ namespace MazeGen
             // Левая панель с параметрами
             var pnlLeft = new Panel
             {
-                Location = new System.Drawing.Point(10, 30),
-                Size = new System.Drawing.Size(350, 650),
+                Location = new Point(10, 30),
+                Size = new Size(350, 650),
                 BorderStyle = BorderStyle.FixedSingle,
                 AutoScroll = true
             };
@@ -75,21 +79,21 @@ namespace MazeGen
             var themeGroup = new GroupBox
             {
                 Text = "",
-                Location = new System.Drawing.Point(10, 15),
-                Size = new System.Drawing.Size(320, 85)
+                Location = new Point(10, 15),
+                Size = new Size(320, 85)
             };
 
             var lblTheme = new Label
             {
                 Text = "Тема оформления",
-                Location = new System.Drawing.Point(10, 0),
-                Size = new System.Drawing.Size(150, 20),
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Location = new Point(10, 0),
+                Size = new Size(150, 20),
+                Font = new Font("Segoe UI", 12)
             };
             pnlLeft.Controls.Add(lblTheme);
 
-            string[] themes = { "Лес", "Горы", "Пустыня", "Равнина" };
-            Theme[] themeValues = { Theme.Forest, Theme.Mountains, Theme.Desert, Theme.Plain };
+            string[] themes = { "Лес", "Город", "Пустыня", "Подземелье" };
+            Theme[] themeValues = { Theme.Forest, Theme.City, Theme.Desert, Theme.Dungeon };
             for (int i = 0; i < themes.Length; i++)
             {
                 var rbLeft = new RadioButton
@@ -97,11 +101,17 @@ namespace MazeGen
                     Text = themes[i],
                     Location = new Point(20, 15 + i * 15),
                     Checked = (i == 0),
-                    Font = new System.Drawing.Font("Segoe UI", 12),
+                    Font = new Font("Segoe UI", 12),
                     AutoSize = true
                 };
                 int idxLeft = i;
-                rbLeft.CheckedChanged += (s, e) => { if ((s as RadioButton).Checked) { currentTheme = themeValues[idxLeft]; pnlMazeView.Invalidate(); } };
+                rbLeft.CheckedChanged += (s, e) => {
+                    if ((s as RadioButton).Checked) {
+                        currentTheme = themeValues[idxLeft];
+                        LoadThemeImages();
+                        pnlMazeView.Invalidate();
+                    }
+                };
                 themeGroup.Controls.Add(rbLeft);
                 i++;
 
@@ -110,11 +120,17 @@ namespace MazeGen
                     Text = themes[i],
                     Location = new Point(150, 15 + (i - 1) * 15),
                     Checked = (i == 0),
-                    Font = new System.Drawing.Font("Segoe UI", 12),
+                    Font = new Font("Segoe UI", 12),
                     AutoSize = true
                 };
                 int idxRight = i;
-                rbRight.CheckedChanged += (s, e) => { if ((s as RadioButton).Checked) { currentTheme = themeValues[idxRight]; pnlMazeView.Invalidate(); } };
+                rbRight.CheckedChanged += (s, e) => {
+                    if ((s as RadioButton).Checked) {
+                        currentTheme = themeValues[idxRight];
+                        LoadThemeImages();
+                        pnlMazeView.Invalidate();
+                    }
+                };
                 themeGroup.Controls.Add(rbRight);
             }
             pnlLeft.Controls.Add(themeGroup);
@@ -123,35 +139,35 @@ namespace MazeGen
             var lblPlacement = new Label
             {
                 Text = "Режим прохождения",
-                Location = new System.Drawing.Point(10, 110),
-                Size = new System.Drawing.Size(250, 20),
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Location = new Point(10, 110),
+                Size = new Size(250, 20),
+                Font = new Font("Segoe UI", 12)
             };
             pnlLeft.Controls.Add(lblPlacement);
 
             var placementGroup = new GroupBox
             {
                 Text = "",
-                Location = new System.Drawing.Point(10, 125),
-                Size = new System.Drawing.Size(320, 50)
+                Location = new Point(10, 125),
+                Size = new Size(320, 50)
             };
             var rbAuto = new RadioButton
             {
                 Text = "Авто",
-                Location = new System.Drawing.Point(20, 15),
+                Location = new Point(20, 15),
                 Checked = true,
                 AutoSize = true,
                 Name = "rbAuto",
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new Font("Segoe UI", 12)
             };
 
             var rbManual = new RadioButton
             {
                 Text = "Вручную",
-                Location = new System.Drawing.Point(200, 15),
+                Location = new Point(200, 15),
                 AutoSize = true,
                 Name = "rbManual",
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new Font("Segoe UI", 12)
             };
             placementGroup.Controls.Add(rbAuto);
             placementGroup.Controls.Add(rbManual);
@@ -160,10 +176,10 @@ namespace MazeGen
             var btnApply = new Button
             {
                 Text = "Применить",
-                Location = new System.Drawing.Point(70, 190),
-                Size = new System.Drawing.Size(200, 35),
-                BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12),
+                Location = new Point(70, 190),
+                Size = new Size(200, 35),
+                BackColor = Color.Ivory,
+                Font = new Font("Segoe UI", 12),
                 Name = "btnApply"
             };
             btnApply.Click += (s, e) => ApplyMode();
@@ -172,10 +188,10 @@ namespace MazeGen
             var btnStart = new Button
             {
                 Text = "Начать прохождение",
-                Location = new System.Drawing.Point(70, 235),
-                Size = new System.Drawing.Size(200, 35),
-                BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12),
+                Location = new Point(70, 235),
+                Size = new Size(200, 35),
+                BackColor = Color.Ivory,
+                Font = new Font("Segoe UI", 12),
                 Name = "btnStart",
                 Enabled = false
             };
@@ -185,10 +201,10 @@ namespace MazeGen
             var btnMakeStep = new Button
             {
                 Text = "Сделать шаг",
-                Location = new System.Drawing.Point(70, 280),
-                Size = new System.Drawing.Size(200, 35),
-                BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12),
+                Location = new Point(70, 280),
+                Size = new Size(200, 35),
+                BackColor = Color.Ivory,
+                Font = new Font("Segoe UI", 12),
                 Name = "btnMakeStep",
                 Visible = false,
                 Enabled = false
@@ -196,13 +212,13 @@ namespace MazeGen
             btnMakeStep.Click += (s, e) => MakeStep();
             pnlLeft.Controls.Add(btnMakeStep);
 
-            // Блок выбора алгоритма прохождения (видимый только для авто)
+            // Блок выбора алгоритма прохождения
             var lblAlgorithm = new Label
             {
                 Text = "Алгоритм прохождения",
-                Location = new System.Drawing.Point(10, 320),
-                Size = new System.Drawing.Size(200, 20),
-                Font = new System.Drawing.Font("Segoe UI", 12),
+                Location = new Point(10, 320),
+                Size = new Size(200, 20),
+                Font = new Font("Segoe UI", 12),
                 Name = "lblAlgorithm",
                 Visible = false
             };
@@ -211,8 +227,8 @@ namespace MazeGen
             var algorithmGroup = new GroupBox
             {
                 Text = "",
-                Location = new System.Drawing.Point(10, 335),
-                Size = new System.Drawing.Size(320, 50),
+                Location = new Point(10, 335),
+                Size = new Size(320, 50),
                 Name = "algorithmGroup",
                 Visible = false
             };
@@ -220,32 +236,32 @@ namespace MazeGen
             var rbWave = new RadioButton
             {
                 Text = "Волновой",
-                Location = new System.Drawing.Point(20, 15),
+                Location = new Point(20, 15),
                 Checked = true,
                 AutoSize = true,
                 Name = "rbWave",
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new Font("Segoe UI", 12)
             };
 
             var rbHand = new RadioButton
             {
                 Text = "Правой руки",
-                Location = new System.Drawing.Point(190, 15),
+                Location = new Point(190, 15),
                 AutoSize = true,
                 Name = "rbHand",
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new Font("Segoe UI", 12)
             };
             algorithmGroup.Controls.Add(rbWave);
             algorithmGroup.Controls.Add(rbHand);
             pnlLeft.Controls.Add(algorithmGroup);
 
-            // Блок выбора режима автоматического прохождения (видимый только для авто)
+            // Блок выбора режима автоматического прохождения
             var lblMode = new Label
             {
                 Text = "Режим автоматического прохождения",
-                Location = new System.Drawing.Point(10, 400),
-                Size = new System.Drawing.Size(250, 20),
-                Font = new System.Drawing.Font("Segoe UI", 12),
+                Location = new Point(10, 400),
+                Size = new Size(250, 20),
+                Font = new Font("Segoe UI", 12),
                 Name = "lblMode",
                 Visible = false
             };
@@ -254,8 +270,8 @@ namespace MazeGen
             var modeGroup = new GroupBox
             {
                 Text = "",
-                Location = new System.Drawing.Point(10, 415),
-                Size = new System.Drawing.Size(320, 50),
+                Location = new Point(10, 415),
+                Size = new Size(320, 50),
                 Name = "modeGroup",
                 Visible = false
             };
@@ -263,20 +279,37 @@ namespace MazeGen
             var rbStep = new RadioButton
             {
                 Text = "Пошаговый",
-                Location = new System.Drawing.Point(20, 15),
+                Location = new Point(20, 15),
                 Checked = true,
                 AutoSize = true,
                 Name = "rbStep",
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new Font("Segoe UI", 12)
+            };
+            rbStep.CheckedChanged += (s, e) =>
+            {
+                var lblSpeed = Controls.Find("lblSpeed", true)[0];
+                var speedGroup = Controls.Find("speedGroup", true)[0];
+                if (rbStep.Checked)
+                {
+                    lblSpeed.Visible = false;
+                    speedGroup.Visible = false;
+                }
             };
 
             var rbDelay = new RadioButton
             {
                 Text = "С задержкой",
-                Location = new System.Drawing.Point(190, 15),
+                Location = new Point(190, 15),
                 AutoSize = true,
                 Name = "rbDelay",
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Font = new Font("Segoe UI", 12)
+            };
+            rbDelay.CheckedChanged += (s, e) =>
+            {
+                var lblSpeed = Controls.Find("lblSpeed", true)[0];
+                var speedGroup = Controls.Find("speedGroup", true)[0];
+                lblSpeed.Visible = rbDelay.Checked;
+                speedGroup.Visible = rbDelay.Checked;
             };
             modeGroup.Controls.Add(rbStep);
             modeGroup.Controls.Add(rbDelay);
@@ -286,9 +319,9 @@ namespace MazeGen
             var lblSpeed = new Label
             {
                 Text = "Скорость прохождения",
-                Location = new System.Drawing.Point(10, 480),
-                Size = new System.Drawing.Size(200, 20),
-                Font = new System.Drawing.Font("Segoe UI", 12),
+                Location = new Point(10, 480),
+                Size = new Size(200, 20),
+                Font = new Font("Segoe UI", 12),
                 Name = "lblSpeed",
                 Visible = false
             };
@@ -297,51 +330,51 @@ namespace MazeGen
             var speedGroup = new GroupBox
             {
                 Text = "",
-                Location = new System.Drawing.Point(10, 500),
-                Size = new System.Drawing.Size(320, 80),
+                Location = new Point(10, 500),
+                Size = new Size(320, 80),
                 Name = "speedGroup",
                 Visible = false
             };
 
             var tbSpeed = new TrackBar
             {
-                Location = new System.Drawing.Point(10, 10),
+                Location = new Point(10, 10),
                 Minimum = 1,
                 Maximum = 3,
                 Value = 2,
                 TickFrequency = 1,
                 Name = "tbSpeed",
-                Size = new System.Drawing.Size(280, 45)
+                Size = new Size(280, 45)
             };
             speedGroup.Controls.Add(tbSpeed);
 
             var lblSpeedLow = new Label
             {
                 Text = "Низкая",
-                Location = new System.Drawing.Point(10, 55),
+                Location = new Point(10, 55),
                 AutoSize = true,
-                Font = new System.Drawing.Font("Segoe UI", 9)
+                Font = new Font("Segoe UI", 9)
             };
             var lblSpeedMid = new Label
             {
                 Text = "Средняя",
-                Location = new System.Drawing.Point(125, 55),
+                Location = new Point(125, 55),
                 AutoSize = true,
-                Font = new System.Drawing.Font("Segoe UI", 9)
+                Font = new Font("Segoe UI", 9)
             };
             var lblSpeedHigh = new Label
             {
                 Text = "Высокая",
-                Location = new System.Drawing.Point(250, 55),
+                Location = new Point(250, 55),
                 AutoSize = true,
-                Font = new System.Drawing.Font("Segoe UI", 9)
+                Font = new Font("Segoe UI", 9)
             };
             speedGroup.Controls.Add(lblSpeedLow);
             speedGroup.Controls.Add(lblSpeedMid);
             speedGroup.Controls.Add(lblSpeedHigh);
 
-            var regularFont = new System.Drawing.Font("Segoe UI", 9, System.Drawing.FontStyle.Regular);
-            var boldFont = new System.Drawing.Font("Segoe UI", 9, System.Drawing.FontStyle.Bold);
+            var regularFont = new Font("Segoe UI", 9, FontStyle.Regular);
+            var boldFont = new Font("Segoe UI", 9, FontStyle.Bold);
 
             Action updateLabels = () =>
             {
@@ -362,13 +395,13 @@ namespace MazeGen
             this.Controls.Add(pnlLeft);
 
             // Правая панель для визуализации
-            pnlMazeView = new Panel
+            pnlMazeView = new OptimizedPanel
             {
-                Location = new System.Drawing.Point(370, 30),
-                Size = new System.Drawing.Size(810, 650),
+                Location = new Point(370, 30),
+                Size = new Size(810, 650),
                 BorderStyle = BorderStyle.FixedSingle,
                 Name = "pnlMazeView",
-                BackColor = System.Drawing.Color.White
+                BackColor = Color.White
             };
             pnlMazeView.Paint += PnlMazeView_Paint;
             pnlMazeView.MouseClick += PnlMazeView_MouseClick;
@@ -386,26 +419,24 @@ namespace MazeGen
             int w = pnlMazeView.Width / currentMaze.Width;
             int h = pnlMazeView.Height / currentMaze.Height;
 
+            // Местность
             for (int x = 0; x < currentMaze.Width; x++)
             {
                 for (int y = 0; y < currentMaze.Height; y++)
                 {
                     Rectangle cellRect = new Rectangle(x * w, y * h, w, h);
+                    Bitmap img = null;
 
-                    // Вход
                     if (currentMaze.Entrance == new Point(x, y))
-                        g.FillRectangle(Brushes.LimeGreen, cellRect);
-                    // Выход
+                        img = cellImages["entrance"];
                     else if (currentMaze.Exit == new Point(x, y))
-                        g.FillRectangle(Brushes.Red, cellRect);
-                    // Проход
+                        img = cellImages["exit"];
                     else if (currentMaze.Grid[x, y] == 1)
-                        g.FillRectangle(Brushes.White, cellRect);
-                    // Стена
+                        img = cellImages["path"];
                     else
-                        g.FillRectangle(Brushes.Black, cellRect);
+                        img = cellImages["wall"];
 
-                    g.DrawRectangle(Pens.Gray, cellRect);
+                    g.DrawImage(img, cellRect);
                 }
             }
 
@@ -415,26 +446,27 @@ namespace MazeGen
                 for (int i = 0; i < currentPathIndex - 1; i++)
                 {
                     var pt = currentPath[i];
-                    Rectangle cellRect = new Rectangle(pt.X * w, pt.Y * h, w, h);
                     if (pt != currentMaze.Entrance && pt != currentMaze.Exit)
-                        g.FillRectangle(Brushes.LightSkyBlue, cellRect);
+                    {
+                        Rectangle cellRect = new Rectangle(pt.X * w, pt.Y * h, w, h);
+                        g.DrawImage(cellImages["passed"], cellRect);
+                    }
                 }
             }
 
-            // Текущее положение персонажа
+            // Положение персонажа
             if (currentPathIndex > 0 && currentPath.Count > currentPathIndex - 1)
             {
                 var pos = currentPath[currentPathIndex - 1];
                 Rectangle cellRect = new Rectangle(pos.X * w, pos.Y * h, w, h);
-                g.FillEllipse(Brushes.Gold, cellRect);
-                g.DrawEllipse(Pens.DarkGoldenrod, cellRect);
+                g.DrawImage(cellImages["player"], cellRect);
             }
         }
 
         private void PnlMazeView_MouseClick(object sender, MouseEventArgs e)
         {
             if (currentMaze == null || !isPlaying) return;
-            
+
             var rbManual = Controls.Find("rbManual", true)[0] as RadioButton;
             if (!rbManual.Checked) return;
 
@@ -444,13 +476,22 @@ namespace MazeGen
             int y = e.Y / cellH;
             var pt = new Point(x, y);
 
-            if (currentMaze.Grid[x, y] == 1)
+            // Текущая позиция игрока
+            var currentPos = currentPath.Last();
+
+            // Проверяем, что клик по проходу и на расстоянии 1
+            if (currentMaze.Grid[x, y] == 1 &&
+                Math.Abs(currentPos.X - x) + Math.Abs(currentPos.Y - y) == 1)
             {
-                currentPathIndex++;
+                currentPath.Add(pt);
+                currentPathIndex = currentPath.Count;
+
                 if (pt == currentMaze.Exit)
                 {
+                    pnlMazeView.Invalidate();
                     MessageBox.Show("Вы прошли лабиринт!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     isPlaying = false;
+                    return;
                 }
                 pnlMazeView.Invalidate();
             }
@@ -485,10 +526,6 @@ namespace MazeGen
                 algorithmGroup.Visible = true;
                 lblMode.Visible = true;
                 modeGroup.Visible = true;
-
-                var rbDelay = Controls.Find("rbDelay", true)[0] as RadioButton;
-                lblSpeed.Visible = rbDelay.Checked;
-                speedGroup.Visible = rbDelay.Checked;
             }
             else
             {
@@ -517,7 +554,7 @@ namespace MazeGen
 
             if (rbManual.Checked)
             {
-                MessageBox.Show("Нажимайте на клетки для движения от входа к выходу.", "Инструкция", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Нажимайте на соседние клетки для движения от входа к выходу.", "Инструкция", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 pnlMazeView.Invalidate();
             }
             else if (rbAuto.Checked)
@@ -577,12 +614,12 @@ namespace MazeGen
         {
             if (currentPath.Count <= currentPathIndex || !isPlaying)
             {
+                pnlMazeView.Invalidate();
                 gameTimer.Stop();
                 MessageBox.Show("Вы прошли лабиринт!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 isPlaying = false;
                 return;
             }
-
             currentPathIndex++;
             pnlMazeView.Invalidate();
         }
@@ -600,6 +637,20 @@ namespace MazeGen
             currentPathIndex = 0;
             currentPath.Clear();
             pnlMazeView.Invalidate();
+        }
+        
+        // Загрузка темы
+        private void LoadThemeImages()
+        {
+            string themeName = currentTheme.ToString().ToLower();
+            string basePath = "C:\\Users\\User\\source\\repos\\MazeGen\\Resources\\Themes";
+
+            cellImages["wall"] = new Bitmap(Path.Combine(basePath, $"{themeName}_wall.png"));
+            cellImages["path"] = new Bitmap(Path.Combine(basePath, $"{themeName}_path.png"));
+            cellImages["entrance"] = new Bitmap(Path.Combine(basePath, $"{themeName}_entrance.png"));
+            cellImages["exit"] = new Bitmap(Path.Combine(basePath, $"{themeName}_exit.png"));
+            cellImages["passed"] = new Bitmap(Path.Combine(basePath, $"{themeName}_passed.png"));
+            cellImages["player"] = new Bitmap(Path.Combine(basePath, $"{themeName}_player.png"));
         }
     }
 }

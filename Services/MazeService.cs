@@ -367,45 +367,61 @@ namespace MazeGen.Services
             int w = maze.Width, h = maze.Height;
             var grid = maze.Grid;
             var path = new List<Point>();
-            var current = maze.Entrance;
+            var visited = new HashSet<(int, int, int)>(); // (x, y, dir)
+            var start = maze.Entrance;
             var end = maze.Exit;
-            
+
             // Направления
-            var directions = new[] { (1, 0), (0, 1), (-1, 0), (0, -1) };
-            int dirIndex = 0;
-            
-            var visited = new HashSet<Point> { current };
-            path.Add(current);
-            
-            while (current != end && path.Count < w * h)
+            int[] dx = { 1, 0, -1, 0 };
+            int[] dy = { 0, 1, 0, -1 };
+            int dir = 0;
+
+            // Первый шаг из входа
+            for (int d = 0; d < 4; d++)
             {
+                int nx = start.X + dx[d], ny = start.Y + dy[d];
+                if (nx >= 0 && nx < w && ny >= 0 && ny < h && grid[nx, ny] == 1)
+                {
+                    dir = d;
+                    break;
+                }
+            }
+
+            int x = start.X, y = start.Y;
+            path.Add(new Point(x, y));
+            int maxSteps = w * h * 4;
+
+            for (int steps = 0; steps < maxSteps; steps++)
+            {
+                if (x == end.X && y == end.Y)
+                    break;
+
+                // Порядок проверки: направо, вперед, налево, назад
                 bool moved = false;
-                
-                // Пытаемся идти вперед, потом поворачиваем налево
                 for (int i = 0; i < 4; i++)
                 {
-                    int tryDir = (dirIndex - i + 4) % 4; // сначала налево
-                    var (dx, dy) = directions[tryDir];
-                    int nx = current.X + dx, ny = current.Y + dy;
-                    
+                    int ndir = (dir + 1 + 4 - i) % 4;
+                    int nx = x + dx[ndir], ny = y + dy[ndir];
                     if (nx >= 0 && nx < w && ny >= 0 && ny < h && grid[nx, ny] == 1)
                     {
-                        current = new Point(nx, ny);
-                        if (!visited.Contains(current))
+                        if (!visited.Contains((nx, ny, ndir)))
                         {
-                            visited.Add(current);
-                            path.Add(current);
+                            x = nx; y = ny; dir = ndir;
+                            path.Add(new Point(x, y));
+                            visited.Add((x, y, dir));
+                            moved = true;
+                            break;
                         }
-                        dirIndex = tryDir;
-                        moved = true;
-                        break;
                     }
                 }
-                
-                if (!moved) break;
+                if (!moved)
+                    break;
             }
-            
-            return current == end ? path : new List<Point>();
+
+            if (x == end.X && y == end.Y)
+                return path;
+
+            return new List<Point>();
         }
 
         

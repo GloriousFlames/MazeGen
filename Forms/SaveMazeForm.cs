@@ -8,7 +8,6 @@ namespace MazeGen
 {
     public partial class SaveMazeForm : Form
     {
-        // Добавьте поле для MazeService и Maze
         private MazeService mazeService;
         private Maze mazeToSave;
         private Database db;

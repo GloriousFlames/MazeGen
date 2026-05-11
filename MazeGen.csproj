@@ -9,7 +9,128 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Themes\city_entrance.png" />
+    <None Remove="Resources\Themes\city_exit.png" />
+    <None Remove="Resources\Themes\city_passed.png" />
+    <None Remove="Resources\Themes\city_path.png" />
+    <None Remove="Resources\Themes\city_player.png" />
+    <None Remove="Resources\Themes\city_wall.png" />
+    <None Remove="Resources\Themes\desert_entrance.png" />
+    <None Remove="Resources\Themes\desert_exit.png" />
+    <None Remove="Resources\Themes\desert_passed.png" />
+    <None Remove="Resources\Themes\desert_path.png" />
+    <None Remove="Resources\Themes\desert_player.png" />
+    <None Remove="Resources\Themes\desert_wall.png" />
+    <None Remove="Resources\Themes\dungeon_entrance.png" />
+    <None Remove="Resources\Themes\dungeon_exit.png" />
+    <None Remove="Resources\Themes\dungeon_passed.png" />
+    <None Remove="Resources\Themes\dungeon_path.png" />
+    <None Remove="Resources\Themes\dungeon_player.png" />
+    <None Remove="Resources\Themes\dungeon_wall.png" />
+    <None Remove="Resources\Themes\forest_entrance.png" />
+    <None Remove="Resources\Themes\forest_exit.png" />
+    <None Remove="Resources\Themes\forest_passed.png" />
+    <None Remove="Resources\Themes\forest_path.png" />
+    <None Remove="Resources\Themes\forest_player.png" />
+    <None Remove="Resources\Themes\forest_wall.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Themes\city_entrance.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\city_exit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\city_passed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\city_path.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\city_player.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\desert_entrance.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\desert_exit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\desert_passed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\dungeon_entrance.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\dungeon_passed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\dungeon_path.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\dungeon_player.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\dungeon_wall.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\forest_entrance.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\forest_exit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\forest_passed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\forest_path.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\forest_player.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Themes\forest_wall.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Models\OptimizedPanel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Themes\city_wall.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Themes\desert_path.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Themes\desert_player.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Themes\desert_wall.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Themes\dungeon_exit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
