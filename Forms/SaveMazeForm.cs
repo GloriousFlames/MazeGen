@@ -1,8 +1,6 @@
 using MazeGen.Data;
 using MazeGen.Models;
 using MazeGen.Services;
-using System;
-using System.Windows.Forms;
 
 namespace MazeGen
 {
@@ -69,16 +67,24 @@ namespace MazeGen
 
         private void Save()
         {
-            var txtName = this.Controls["txtName"] as TextBox;
+            var txtName = Controls["txtName"] as TextBox;
             if (string.IsNullOrWhiteSpace(txtName.Text))
             {
                 MessageBox.Show("Введите название лабиринта!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            mazeToSave.Name = txtName.Text.Trim();
+            string mazeName = txtName.Text.Trim();
+
+            if (db.GetAllMazes().Any(m => string.Equals(m.Name, mazeName)))
+            {
+                MessageBox.Show("Лабиринт с таким именем уже существует!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            mazeToSave.Name = mazeName;
             db.SaveMaze(mazeToSave);
-            MessageBox.Show($"Лабиринт '{txtName.Text}' сохранен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.Close();
+            MessageBox.Show($"Лабиринт '{mazeName}' сохранен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Close();
         }
     }
 }

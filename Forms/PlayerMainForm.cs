@@ -37,6 +37,7 @@ namespace MazeGen
             Text = $"MazeGen - Игрок ({currentUser.Login})";
             Size = new Size(1200, 720);
             StartPosition = FormStartPosition.CenterScreen;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
 
             // Меню
             var menuStrip = new MenuStrip();

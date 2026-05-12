@@ -11,6 +11,7 @@ namespace MazeGen.Data
         {
             _connectionString = $"Data Source={dbPath}";
             EnsureTables();
+            DeleteMazeByName("test");
         }
 
         private void EnsureTables()
@@ -130,6 +131,16 @@ namespace MazeGen.Data
             var grid = new int[w, h];
             Buffer.BlockCopy(bytes, 0, grid, 0, bytes.Length);
             return grid;
+        }
+
+        public void DeleteMazeByName(string name)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "DELETE FROM Mazes WHERE Name = @name";
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.ExecuteNonQuery();
         }
     }
 }

@@ -1,4 +1,5 @@
 using MazeGen.Models;
+using System.ComponentModel;
 
 namespace MazeGen.Services
 {
@@ -404,14 +405,23 @@ namespace MazeGen.Services
                     int nx = x + dx[ndir], ny = y + dy[ndir];
                     if (nx >= 0 && nx < w && ny >= 0 && ny < h && grid[nx, ny] == 1)
                     {
-                        if (!visited.Contains((nx, ny, ndir)))
+                        var nextPoint = new Point(nx, ny);
+
+                        // Добавляем в путь, если не тупик
+                        int idx = path.IndexOf(nextPoint);
+                        if (idx != -1 && nextPoint != end)
                         {
-                            x = nx; y = ny; dir = ndir;
-                            path.Add(new Point(x, y));
-                            visited.Add((x, y, dir));
-                            moved = true;
-                            break;
+                            path.RemoveRange(idx + 1, path.Count - idx - 1);
                         }
+                        else
+                        {
+                            path.Add(nextPoint);
+                        }
+
+                        x = nx; y = ny; dir = ndir;
+                        visited.Add((x, y, dir));
+                        moved = true;
+                        break;
                     }
                 }
                 if (!moved)
@@ -420,10 +430,15 @@ namespace MazeGen.Services
 
             if (x == end.X && y == end.Y)
                 return path;
-
             return new List<Point>();
         }
 
         
     }
 }
+//if (!visited.Contains((nx, ny, ndir)))
+//x = nx; y = ny; dir = ndir;
+//path.Add(new Point(x, y));
+//visited.Add((x, y, dir));
+//moved = true;
+//break;

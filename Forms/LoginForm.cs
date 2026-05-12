@@ -124,9 +124,27 @@ namespace MazeGen
             string login = txtLogin.Text;
             string password = txtPassword.Text;
 
+            if (login.Length < 4 || login.Length > 16)
+            {
+                lblStatus.Text = "Логин должен быть от 4 до 16 символов.";
+                lblStatus.ForeColor = Color.Red;
+                return;
+            }
+            
+            if (password.Length < 4 || password.Length > 16)
+            {
+                lblStatus.Text = "Пароль должен быть от 4 до 16 символов.";
+                lblStatus.ForeColor = Color.Red;
+                return;
+            }
+
             var user = authService.Login(login, password);
             if (user != null)
             {
+                txtLogin.Text = "";
+                txtPassword.Text = "";
+                lblStatus.Text = "";
+
                 Hide();
                 if (user.Login.Equals("admin"))
                 {

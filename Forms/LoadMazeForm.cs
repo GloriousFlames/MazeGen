@@ -17,38 +17,38 @@ namespace MazeGen
 
         private void InitializeComponent()
         {
-            this.Text = "Загрузить лабиринт";
-            this.Size = new System.Drawing.Size(400, 200);
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            Text = "Загрузить лабиринт";
+            Size = new Size(400, 200);
+            StartPosition = FormStartPosition.CenterScreen;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
 
             // Заголовок
             var lblTitle = new Label
             {
                 Text = "Загрузка лабиринта",
-                Font = new System.Drawing.Font("Segoe UI", 16),
-                Location = new System.Drawing.Point(100, 10),
-                Size = new System.Drawing.Size(80, 30),
+                Font = new Font("Segoe UI", 16),
+                Location = new Point(100, 10),
+                Size = new Size(80, 30),
                 AutoSize = true
             };
-            this.Controls.Add(lblTitle);
+            Controls.Add(lblTitle);
 
             var lblMazes = new Label
             {
                 Text = "Выберите лабиринт:",
-                Location = new System.Drawing.Point(20, 60),
-                Font = new System.Drawing.Font("Segoe UI", 12),
-                Size = new System.Drawing.Size(150, 20),
+                Location = new Point(20, 60),
+                Font = new Font("Segoe UI", 12),
+                Size = new Size(150, 20),
                 AutoSize = true
             };
-            this.Controls.Add(lblMazes);
+            Controls.Add(lblMazes);
 
             var cmbMazes = new ComboBox
             {
                 Name = "cmbMazes",
-                Location = new System.Drawing.Point(200, 60),
-                Size = new System.Drawing.Size(150, 20),
+                Location = new Point(200, 60),
+                Size = new Size(150, 20),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
             var mazes = db.GetAllMazes();
@@ -57,18 +57,18 @@ namespace MazeGen
             {
                 cmbMazes.Items.Add(maze.Name);
             }
-            this.Controls.Add(cmbMazes);
+            Controls.Add(cmbMazes);
 
             var btnLoad = new Button
             {
                 Text = "Загрузить",
-                Location = new System.Drawing.Point(150, 100),
-                Size = new System.Drawing.Size(100, 40),
-                BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Location = new Point(150, 100),
+                Size = new Size(100, 40),
+                BackColor = Color.Ivory,
+                Font = new Font("Segoe UI", 12)
             };
             btnLoad.Click += (s, e) => Load();
-            this.Controls.Add(btnLoad);
+            Controls.Add(btnLoad);
         }
 
         private void Load()

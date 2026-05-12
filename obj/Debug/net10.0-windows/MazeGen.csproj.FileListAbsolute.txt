@@ -12,7 +12,6 @@ C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\refint\MazeGen.dll
 C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.pdb
 C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.genruntimeconfig.cache
 C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\ref\MazeGen.dll
-C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.Forms.Form1.resources
 C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.LoginForm.resources
 C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.csproj.GenerateResource.cache
 C:\Users\User\source\repos\MazeGen\obj\Debug\net10.0-windows\MazeGen.sourcelink.json

@@ -17,9 +17,13 @@ namespace MazeGen
         private Point? manualEntrance = null;
         private Point? manualExit = null;
         private List<Point> pathCells = new List<Point>();
-
         private Panel pnlMazeView;
+
+        // Изображения темы
         private Dictionary<string, Bitmap> cellImages = new();
+
+        // Доступные клетки для входа и выхода
+        private List<Point> availableEntranceExitCells = new List<Point>();
 
         public AdminMainForm(User user, Database db, MazeService ms)
         {
@@ -38,6 +42,7 @@ namespace MazeGen
             Text = "MazeGen - Администратор";
             Size = new Size(1200, 700);
             StartPosition = FormStartPosition.CenterScreen;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
 
             // Меню
             var menuStrip = new MenuStrip();
@@ -64,8 +69,8 @@ namespace MazeGen
 
             menuStrip.Items.Add(fileMenu);
             menuStrip.Items.Add(helpMenu);
-            this.MainMenuStrip = menuStrip;
-            this.Controls.Add(menuStrip);
+            MainMenuStrip = menuStrip;
+            Controls.Add(menuStrip);
 
             // Левая панель
             var pnlLeft = new Panel
@@ -126,7 +131,14 @@ namespace MazeGen
                     AutoSize = true
                 };
                 int idxRight = i;
-                rbRight.CheckedChanged += (s, e) => { if ((s as RadioButton).Checked) currentTheme = themeValues[idxRight]; };
+                rbRight.CheckedChanged += (s, e) => {
+                    if ((s as RadioButton).Checked)
+                    {
+                        currentTheme = themeValues[idxRight];
+                        LoadThemeImages();
+                        pnlMazeView.Invalidate();
+                    }
+                };
                 themeGroup.Controls.Add(rbRight);
             }
             pnlLeft.Controls.Add(themeGroup);
@@ -306,23 +318,10 @@ namespace MazeGen
             };
             btnGenerateMaze.Click += (s, e) => GenerateMaze();
             pnlLeft.Controls.Add(btnGenerateMaze);
-
-            // Тестовая кнопка для перехода между режимами
-            var btnSwitchMode = new Button
-            {
-                Text = "Сменить роль",
-                Location = new Point(70, 580),
-                Size = new Size(200, 35),
-                BackColor = System.Drawing.Color.Ivory,
-                Font = new Font("Segoe UI", 12)
-            };
-            btnSwitchMode.Click += (s, e) => SwitchMode();
-            pnlLeft.Controls.Add(btnSwitchMode);
-
-            this.Controls.Add(pnlLeft);
+            Controls.Add(pnlLeft);
 
             // Правая панель для визуализации
-            var pnlRight = new Panel
+            var pnlRight = new OptimizedPanel
             {
                 Location = new Point(370, 30),
                 Size = new Size(810, 640),
@@ -344,9 +343,34 @@ namespace MazeGen
             pnlMazeView.Invalidate();
             Controls.Find("btnApplyPlacement", true)[0].Enabled = true;
             Controls.Find("btnGenerateMaze", true)[0].Enabled = false;
-            MessageBox.Show("Шаблон лабиринта создан!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        // Добавление доступных клеток для входа и выхода
+        private List<Point> GetAvailableEntranceExitCells()
+        {
+            var result = new List<Point>();
+            if (currentMaze == null) return result;
+            int w = currentMaze.Width, h = currentMaze.Height;
+            for (int x = 1; x < w - 1; x++)
+            {
+                if (x % 2 == 1)
+                {
+                    result.Add(new Point(x, 0));
+                    result.Add(new Point(x, h - 1));
+                }
+            }
+            for (int y = 1; y < h - 1; y++)
+            {
+                if (y % 2 == 1)
+                {
+                    result.Add(new Point(0, y));
+                    result.Add(new Point(w - 1, y));
+                }
+            }
+            return result;
+        }
+
+        // Применить расстановку
         private void ApplyPlacement()
         {
             var rbAuto = Controls.Find("rbAuto", true)[0] as RadioButton;
@@ -355,6 +379,7 @@ namespace MazeGen
                 mazeService.PlaceEntranceExit(currentMaze, true);
                 manualEntrance = null;
                 manualExit = null;
+                availableEntranceExitCells.Clear();
                 pnlMazeView.Invalidate();
                 Controls.Find("btnGenerateMaze", true)[0].Enabled = true;
                 MessageBox.Show("Вход и выход расставлены автоматически!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -365,8 +390,9 @@ namespace MazeGen
                 placementStep = 0;
                 manualEntrance = null;
                 manualExit = null;
+                availableEntranceExitCells = GetAvailableEntranceExitCells();
                 pnlMazeView.Invalidate();
-                MessageBox.Show("Выберите клетку входа, затем клетку выхода на шаблоне.", "Ручная расстановка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Нажмите на одну из подсвеченных клеток для выбора входа, а затем выхода.", "Ручная расстановка", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -385,9 +411,9 @@ namespace MazeGen
                     Rectangle cellRect = new Rectangle(x * w, y * h, w, h);
 
                     Bitmap img = null;
-                    if (currentMaze.Entrance == new Point(x, y))
+                    if (!(x == 0 && y == 0) && currentMaze.Entrance == new Point(x, y))
                         img = cellImages["entrance"];
-                    else if (currentMaze.Exit == new Point(x, y))
+                    else if (!(x == 0 && y == 0) && currentMaze.Exit == new Point(x, y))
                         img = cellImages["exit"];
                     else if (currentMaze.Grid[x, y] == 1)
                         img = cellImages["path"];
@@ -395,12 +421,18 @@ namespace MazeGen
                         img = cellImages["wall"];
 
                     g.DrawImage(img, cellRect);
-
-                    g.DrawRectangle(Pens.Gray, cellRect);
                 }
             }
 
-            // Выделение входа и выхода
+            // Подсветка доступных клеток для входа/выхода при ручной расстановке
+            if (isPlacingEntranceExit)
+            {
+                using var brush = new SolidBrush(Color.FromArgb(100, Color.DeepSkyBlue));
+                foreach (var pt in availableEntranceExitCells)
+                    g.FillRectangle(brush, pt.X * w, pt.Y * h, w, h);
+            }
+
+            // Подсветка выбранного входа
             if (isPlacingEntranceExit)
             {
                 if (manualEntrance.HasValue)
@@ -420,12 +452,13 @@ namespace MazeGen
             int y = e.Y / cellH;
             var pt = new Point(x, y);
 
+            if (!availableEntranceExitCells.Contains(pt)) return;
+
             if (placementStep == 0)
             {
                 manualEntrance = pt;
                 placementStep = 1;
                 pnlMazeView.Invalidate();
-                MessageBox.Show("Теперь выберите клетку выхода.", "Ручная расстановка", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (placementStep == 1)
             {
@@ -437,7 +470,6 @@ namespace MazeGen
                     placementStep = 0;
                     pnlMazeView.Invalidate();
                     Controls.Find("btnGenerateMaze", true)[0].Enabled = true;
-                    MessageBox.Show("Вход и выход успешно расставлены!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -470,7 +502,6 @@ namespace MazeGen
             {
                 mazeService.GenerateMaze(currentMaze, algorithm);
                 pnlMazeView.Invalidate();
-                MessageBox.Show($"Лабиринт сгенерирован алгоритмом {algorithm}!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -490,20 +521,11 @@ namespace MazeGen
             form.ShowDialog(this);
         }
 
-        // Тестовый переход между режимами
-        private void SwitchMode()
-        {
-            var playerForm = new PlayerMainForm(currentUser, db, mazeService);
-            playerForm.Show();
-            this.Hide();
-            playerForm.FormClosed += (s, e) => this.Show();
-        }
-
         // Загрузка темы
         private void LoadThemeImages()
         {
             string themeName = currentTheme.ToString().ToLower();
-            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Themes");
+            string basePath = "C:\\Users\\User\\source\\repos\\MazeGen\\Resources\\Themes";
 
             cellImages["wall"] = new Bitmap(Path.Combine(basePath, $"{themeName}_wall.png"));
             cellImages["path"] = new Bitmap(Path.Combine(basePath, $"{themeName}_path.png"));

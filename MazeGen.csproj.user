@@ -7,9 +7,6 @@
     <Compile Update="Forms\AdminMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="Forms\LoadMazeForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -129,6 +129,20 @@ namespace MazeGen
             string password = txtPassword.Text;
             string confirm = txtConfirm.Text;
 
+            if (login.Length < 4 || login.Length > 16)
+            {
+                lblStatus.Text = "Логин должен быть от 4 до 16 символов.";
+                lblStatus.ForeColor = Color.Red;
+                return;
+            }
+
+            if (password.Length < 4 || password.Length > 16)
+            {
+                lblStatus.Text = "Пароль должен быть от 4 до 16 символов.";
+                lblStatus.ForeColor = Color.Red;
+                return;
+            }
+
             if (password != confirm)
             {
                 lblStatus.Text = "Пароли не совпадают!";
