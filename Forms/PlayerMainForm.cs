@@ -1,18 +1,16 @@
 using MazeGen.Data;
 using MazeGen.Models;
 using MazeGen.Services;
-using System.Reflection;
 
 namespace MazeGen
 {
     public partial class PlayerMainForm : Form
     {
         private Database db;
-        private User currentUser;
         private MazeService mazeService;
         private Theme currentTheme = Theme.Forest;
         private Panel pnlMazeView;
-        
+
         // Состояние прохождения
         private Maze currentMaze;
         private List<Point> currentPath = new List<Point>();
@@ -20,12 +18,13 @@ namespace MazeGen
         private bool isPlaying = false;
         private System.Windows.Forms.Timer gameTimer;
 
+        private string currentAlgorithm = ""; // "wave" or "righthand"
+
         // Изображения темы
         private Dictionary<string, Bitmap> cellImages = new();
         
-        public PlayerMainForm(User user, Database db, MazeService ms)
+        public PlayerMainForm(Database db, MazeService ms)
         {
-            currentUser = user;
             this.db = db;
             mazeService = ms;
             InitializeComponent();
@@ -34,10 +33,10 @@ namespace MazeGen
 
         private void InitializeComponent()
         {
-            Text = $"MazeGen - Игрок ({currentUser.Login})";
+            Text = $"MazeGen - Игрок";
             Size = new Size(1200, 720);
             StartPosition = FormStartPosition.CenterScreen;
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
 
             // Меню
             var menuStrip = new MenuStrip();
@@ -61,6 +60,10 @@ namespace MazeGen
             var aboutItem = new ToolStripMenuItem("О разработчиках");
             aboutItem.Click += (s, e) => ShowAbout();
             helpMenu.DropDownItems.Add(aboutItem);
+
+            var systemItem = new ToolStripMenuItem("О системе");
+            systemItem.Click += (s, e) => ShowSystemInfo();
+            helpMenu.DropDownItems.Add(systemItem);
 
             menuStrip.Items.Add(fileMenu);
             menuStrip.Items.Add(helpMenu);
@@ -393,7 +396,7 @@ namespace MazeGen
             updateLabels();
             pnlLeft.Controls.Add(speedGroup);
 
-            this.Controls.Add(pnlLeft);
+            Controls.Add(pnlLeft);
 
             // Правая панель для визуализации
             pnlMazeView = new OptimizedPanel
@@ -406,7 +409,7 @@ namespace MazeGen
             };
             pnlMazeView.Paint += PnlMazeView_Paint;
             pnlMazeView.MouseClick += PnlMazeView_MouseClick;
-            this.Controls.Add(pnlMazeView);
+            Controls.Add(pnlMazeView);
 
             // Инициализация таймера для автоматического прохождения
             gameTimer = new System.Windows.Forms.Timer();
@@ -539,7 +542,6 @@ namespace MazeGen
             }
 
             btnStart.Enabled = true;
-            MessageBox.Show("Режим применен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void StartGame()
@@ -562,7 +564,8 @@ namespace MazeGen
             {
                 var rbWave = Controls.Find("rbWave", true)[0] as RadioButton;
                 string algorithm = rbWave.Checked ? "wave" : "righthand";
-                
+                currentAlgorithm = algorithm;
+
                 if (algorithm == "wave")
                     currentPath = mazeService.FindPathWave(currentMaze);
                 else
@@ -622,6 +625,28 @@ namespace MazeGen
                 return;
             }
             currentPathIndex++;
+
+            // Удаление тупиков из пути
+            if (currentAlgorithm == "righthand")
+            {
+                int posIdx = currentPathIndex - 1;
+                if (posIdx >= 0 && posIdx < currentPath.Count)
+                {
+                    var pos = currentPath[posIdx];
+                    int earlierIndex = currentPath.FindIndex(p => p == pos);
+                    if (earlierIndex != -1 && earlierIndex < posIdx)
+                    {
+                        int removeStart = earlierIndex + 1;
+                        int removeCount = posIdx - earlierIndex;
+                        if (removeCount > 0 && removeStart >= 0 && removeStart + removeCount <= currentPath.Count)
+                        {
+                            currentPath.RemoveRange(removeStart, removeCount);
+                            currentPathIndex = earlierIndex + 1;
+                        }
+                    }
+                }
+            }
+
             pnlMazeView.Invalidate();
         }
 
@@ -629,6 +654,16 @@ namespace MazeGen
         {
             var form = new AboutForm();
             form.ShowDialog(this);
+        }
+        private void ShowSystemInfo()
+        {
+            // Открытие HTML-страницы с описанием функций игрока
+            string helpFile = "C:\\Users\\User\\source\\repos\\MazeGen\\Help.html";
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = helpFile,
+                UseShellExecute = true
+            });
         }
 
         // Отображение лабиринта

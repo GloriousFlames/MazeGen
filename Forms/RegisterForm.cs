@@ -6,13 +6,11 @@ namespace MazeGen
     public partial class RegisterForm : Form
     {
         private AuthenticationService authService;
-        private Database db;
 
         public RegisterForm(Database db)
         {
             InitializeComponent();
             authService = new AuthenticationService(db);
-            this.db = db;
         }
 
         private void InitializeComponent()

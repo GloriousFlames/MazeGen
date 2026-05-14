@@ -20,11 +20,11 @@ namespace MazeGen
 
         private void InitializeComponent()
         {
-            this.Text = "MazeGen - Вход";
-            this.Size = new Size(400, 320);
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            Text = "MazeGen - Вход";
+            Size = new Size(400, 320);
+            StartPosition = FormStartPosition.CenterScreen;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
 
             // Заголовок
             var lblTitle = new Label
@@ -35,7 +35,7 @@ namespace MazeGen
                 Size = new Size(100, 30),
                 AutoSize = true
             };
-            this.Controls.Add(lblTitle);
+            Controls.Add(lblTitle);
 
             // Логин
             var lblLogin = new Label
@@ -45,7 +45,7 @@ namespace MazeGen
                 Size = new Size(80, 20),
                 Font = new Font("Segoe UI", 12)
             };
-            this.Controls.Add(lblLogin);
+            Controls.Add(lblLogin);
 
             var txtLogin = new TextBox
             {
@@ -54,7 +54,7 @@ namespace MazeGen
                 Size = new Size(200, 20),
                 Font = new Font("Segoe UI", 12)
             };
-            this.Controls.Add(txtLogin);
+            Controls.Add(txtLogin);
 
             // Пароль
             var lblPassword = new Label
@@ -64,7 +64,7 @@ namespace MazeGen
                 Size = new Size(80, 20),
                 Font = new Font("Segoe UI", 12)
             };
-            this.Controls.Add(lblPassword);
+            Controls.Add(lblPassword);
 
             var txtPassword = new TextBox
             {
@@ -74,7 +74,7 @@ namespace MazeGen
                 Font = new Font("Segoe UI", 12),
                 PasswordChar = '*'
             };
-            this.Controls.Add(txtPassword);
+            Controls.Add(txtPassword);
 
             // Кнопка Войти
             var btnLogin = new Button
@@ -170,7 +170,7 @@ namespace MazeGen
 
         private void LoginAsAdmin(User user)
         {
-            var adminForm = new AdminMainForm(user, db, mazeService);
+            var adminForm = new AdminMainForm(db, mazeService);
             adminForm.Show();
             Hide();
             adminForm.FormClosed += (s, e) => Show();
@@ -178,7 +178,7 @@ namespace MazeGen
 
         private void LoginAsPlayer(User user)
         {
-            var playerForm = new PlayerMainForm(user, db, mazeService);
+            var playerForm = new PlayerMainForm(db, mazeService);
             playerForm.Show();
             Hide();
             playerForm.FormClosed += (s, e) => Show();

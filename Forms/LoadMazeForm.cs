@@ -1,5 +1,4 @@
 using MazeGen.Data;
-using MazeGen.Services;
 
 namespace MazeGen
 {

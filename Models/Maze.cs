@@ -9,6 +9,5 @@ namespace MazeGen.Models
         public int[,] Grid { get; set; }
         public Point Entrance { get; set; }
         public Point Exit { get; set; }
-        //public string CreatedDate { get; set; }
     }
 }

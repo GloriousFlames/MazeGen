@@ -1,5 +1,4 @@
 using MazeGen.Models;
-using System.ComponentModel;
 
 namespace MazeGen.Services
 {
@@ -372,7 +371,6 @@ namespace MazeGen.Services
             var start = maze.Entrance;
             var end = maze.Exit;
 
-            // Направления
             int[] dx = { 1, 0, -1, 0 };
             int[] dy = { 0, 1, 0, -1 };
             int dir = 0;
@@ -399,29 +397,21 @@ namespace MazeGen.Services
 
                 // Порядок проверки: направо, вперед, налево, назад
                 bool moved = false;
+
                 for (int i = 0; i < 4; i++)
                 {
                     int ndir = (dir + 1 + 4 - i) % 4;
                     int nx = x + dx[ndir], ny = y + dy[ndir];
                     if (nx >= 0 && nx < w && ny >= 0 && ny < h && grid[nx, ny] == 1)
                     {
-                        var nextPoint = new Point(nx, ny);
-
-                        // Добавляем в путь, если не тупик
-                        int idx = path.IndexOf(nextPoint);
-                        if (idx != -1 && nextPoint != end)
+                        if (!visited.Contains((nx, ny, ndir)))
                         {
-                            path.RemoveRange(idx + 1, path.Count - idx - 1);
+                            x = nx; y = ny; dir = ndir;
+                            path.Add(new Point(x, y));
+                            visited.Add((x, y, dir));
+                            moved = true;
+                            break;
                         }
-                        else
-                        {
-                            path.Add(nextPoint);
-                        }
-
-                        x = nx; y = ny; dir = ndir;
-                        visited.Add((x, y, dir));
-                        moved = true;
-                        break;
                     }
                 }
                 if (!moved)
@@ -430,15 +420,10 @@ namespace MazeGen.Services
 
             if (x == end.X && y == end.Y)
                 return path;
+
             return new List<Point>();
         }
 
-        
+
     }
 }
-//if (!visited.Contains((nx, ny, ndir)))
-//x = nx; y = ny; dir = ndir;
-//path.Add(new Point(x, y));
-//visited.Add((x, y, dir));
-//moved = true;
-//break;

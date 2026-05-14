@@ -6,7 +6,6 @@ namespace MazeGen
 {
     public partial class SaveMazeForm : Form
     {
-        private MazeService mazeService;
         private Maze mazeToSave;
         private Database db;
 
@@ -18,51 +17,51 @@ namespace MazeGen
         }
         private void InitializeComponent()
         {
-            this.Text = "Сохранение лабиринта";
-            this.Size = new System.Drawing.Size(400, 200);
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            Text = "Сохранение лабиринта";
+            Size = new Size(400, 200);
+            StartPosition = FormStartPosition.CenterScreen;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
 
             // Заголовок
             var lblTitle = new Label
             {
                 Text = "Сохранение лабиринта",
-                Font = new System.Drawing.Font("Segoe UI", 16),
-                Location = new System.Drawing.Point(100, 10),
-                Size = new System.Drawing.Size(80, 30),
+                Font = new Font("Segoe UI", 16),
+                Location = new Point(80, 10),
+                Size = new Size(80, 30),
                 AutoSize = true
             };
-            this.Controls.Add(lblTitle);
+            Controls.Add(lblTitle);
 
             var lblMazes = new Label
             {
                 Text = "Введите название:",
-                Location = new System.Drawing.Point(20, 60),
-                Font = new System.Drawing.Font("Segoe UI", 12),
-                Size = new System.Drawing.Size(150, 20),
+                Location = new Point(20, 60),
+                Font = new Font("Segoe UI", 12),
+                Size = new Size(150, 20),
                 AutoSize = true
             };
-            this.Controls.Add(lblMazes);
+            Controls.Add(lblMazes);
 
             var txtName = new TextBox
             {
                 Name = "txtName",
-                Location = new System.Drawing.Point(180, 60),
-                Size = new System.Drawing.Size(180, 20)
+                Location = new Point(180, 60),
+                Size = new Size(180, 20)
             };
-            this.Controls.Add(txtName);
+            Controls.Add(txtName);
 
             var btnSave = new Button
             {
                 Text = "Сохранить",
-                Location = new System.Drawing.Point(150, 100),
-                Size = new System.Drawing.Size(100, 40),
-                BackColor = System.Drawing.Color.Ivory,
-                Font = new System.Drawing.Font("Segoe UI", 12)
+                Location = new Point(150, 100),
+                Size = new Size(100, 40),
+                BackColor = Color.Ivory,
+                Font = new Font("Segoe UI", 12)
             };
             btnSave.Click += (s, e) => Save();
-            this.Controls.Add(btnSave);
+            Controls.Add(btnSave);
         }
 
         private void Save()

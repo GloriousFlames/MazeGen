@@ -11,7 +11,6 @@ namespace MazeGen.Data
         {
             _connectionString = $"Data Source={dbPath}";
             EnsureTables();
-            DeleteMazeByName("test");
         }
 
         private void EnsureTables()

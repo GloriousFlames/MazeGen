@@ -7,10 +7,8 @@ namespace MazeGen
     public partial class AdminMainForm : Form
     {
         private Database db;
-        private User currentUser;
         private MazeService mazeService;
         private Theme currentTheme = Theme.Forest;
-
         private Maze currentMaze;
         private bool isPlacingEntranceExit = false;
         private int placementStep = 0;
@@ -25,9 +23,8 @@ namespace MazeGen
         // Доступные клетки для входа и выхода
         private List<Point> availableEntranceExitCells = new List<Point>();
 
-        public AdminMainForm(User user, Database db, MazeService ms)
+        public AdminMainForm(Database db, MazeService ms)
         {
-            currentUser = user;
             this.db = db;
             mazeService = ms;
             InitializeComponent();
@@ -40,9 +37,9 @@ namespace MazeGen
         private void InitializeComponent()
         {
             Text = "MazeGen - Администратор";
-            Size = new Size(1200, 700);
+            Size = new Size(1200, 720);
             StartPosition = FormStartPosition.CenterScreen;
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
 
             // Меню
             var menuStrip = new MenuStrip();
@@ -63,9 +60,13 @@ namespace MazeGen
 
             var helpMenu = new ToolStripMenuItem("Справка");
             
-            var aboutItem = new ToolStripMenuItem("О разработчиках");
-            aboutItem.Click += (s, e) => ShowAbout();
-            helpMenu.DropDownItems.Add(aboutItem);
+            var authorsItem = new ToolStripMenuItem("О разработчиках");
+            authorsItem.Click += (s, e) => ShowAuthorsInfo();
+            helpMenu.DropDownItems.Add(authorsItem);
+
+            //var systemItem = new ToolStripMenuItem("О системе");
+            //systemItem.Click += (s, e) => ShowSystemInfo();
+            //helpMenu.DropDownItems.Add(systemItem);
 
             menuStrip.Items.Add(fileMenu);
             menuStrip.Items.Add(helpMenu);
@@ -515,10 +516,15 @@ namespace MazeGen
             form.ShowDialog(this);
         }
 
-        private void ShowAbout()
+        private void ShowAuthorsInfo()
         {
             var form = new AboutForm();
             form.ShowDialog(this);
+        }
+
+        private void ShowSystemInfo()
+        {
+            // Переход на HTML-страницу с информацией о системе
         }
 
         // Загрузка темы
