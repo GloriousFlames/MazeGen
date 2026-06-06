@@ -37,7 +37,7 @@ namespace MazeGen
         private void InitializeComponent()
         {
             Text = "MazeGen - Администратор";
-            Size = new Size(1200, 720);
+            Size = new Size(1200, 730);
             StartPosition = FormStartPosition.CenterScreen;
             MaximizeBox = false;
 
@@ -175,7 +175,7 @@ namespace MazeGen
                 Name = "numWidth", 
                 Value = 15, 
                 Minimum = 7, 
-                Maximum = 25, 
+                Maximum = 29, 
                 Location = new Point(200, 20), 
                 Size = new Size(100, 20),
                 Font = new Font("Segoe UI", 12)
@@ -196,7 +196,7 @@ namespace MazeGen
                 Name = "numHeight", 
                 Value = 15, 
                 Minimum = 7, 
-                Maximum = 21, 
+                Maximum = 29, 
                 Location = new Point(200, 60), 
                 Size = new Size(100, 20),
                 Font = new Font("Segoe UI", 12),
@@ -260,7 +260,7 @@ namespace MazeGen
                 Text = "Применить",
                 Location = new Point(100, 360),
                 Size = new Size(150, 35),
-                BackColor = System.Drawing.Color.Ivory,
+                BackColor = Color.Ivory,
                 Font = new Font("Segoe UI", 12),
                 Name = "btnApplyPlacement",
                 Enabled = false // изначально недоступна
@@ -312,7 +312,7 @@ namespace MazeGen
                 Text = "Создать лабиринт",
                 Location = new Point(70, 480),
                 Size = new Size(200, 35),
-                BackColor = System.Drawing.Color.Ivory,
+                BackColor = Color.Ivory,
                 Font = new Font("Segoe UI", 12),
                 Name = "btnGenerateMaze",
                 Enabled = false
@@ -328,7 +328,7 @@ namespace MazeGen
                 Size = new Size(810, 640),
                 BorderStyle = BorderStyle.FixedSingle,
                 Name = "pnlMazeView",
-                BackColor = System.Drawing.Color.White
+                BackColor = Color.White
             };
             this.Controls.Add(pnlRight);
         }

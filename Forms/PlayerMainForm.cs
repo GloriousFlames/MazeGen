@@ -34,7 +34,7 @@ namespace MazeGen
         private void InitializeComponent()
         {
             Text = $"MazeGen - Игрок";
-            Size = new Size(1200, 720);
+            Size = new Size(1200, 730);
             StartPosition = FormStartPosition.CenterScreen;
             MaximizeBox = false;
 
@@ -658,7 +658,7 @@ namespace MazeGen
         private void ShowSystemInfo()
         {
             // Открытие HTML-страницы с описанием функций игрока
-            string helpFile = "C:\\Users\\User\\source\\repos\\MazeGen\\Help.html";
+            string helpFile = "C:\\Users\\User\\source\\repos\\MazeGen\\Help\\Help.html";
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
                 FileName = helpFile,

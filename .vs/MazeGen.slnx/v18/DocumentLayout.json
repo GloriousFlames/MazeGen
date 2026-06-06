@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\User\\source\\repos\\MazeGen\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\help\\help.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:help\\help.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|c:\\users\\user\\source\\repos\\mazegen\\forms\\playermainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3FB74483-EB5E-D2B0-552E-AF7EAB188356}|MazeGen.csproj|solutionrelative:forms\\playermainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -70,17 +74,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "PlayerMainForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\PlayerMainForm.cs",
               "RelativeDocumentMoniker": "Forms\\PlayerMainForm.cs",
               "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\PlayerMainForm.cs",
               "RelativeToolTip": "Forms\\PlayerMainForm.cs",
-              "ViewState": "AgIAAI4CAAAAAAAAAAAIwJoCAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAIICAAAAAAAAAAApwJQCAABZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-03T17:31:16.257Z",
               "IsPinned": true,
@@ -88,13 +92,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "AdminMainForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\AdminMainForm.cs",
               "RelativeDocumentMoniker": "Forms\\AdminMainForm.cs",
               "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\AdminMainForm.cs",
               "RelativeToolTip": "Forms\\AdminMainForm.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAcwEUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABcAAAAAAAAAAAAQwCcAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-02T18:55:01.291Z",
               "IsPinned": true,
@@ -102,21 +106,38 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "MazeService.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Services\\MazeService.cs",
               "RelativeDocumentMoniker": "Services\\MazeService.cs",
               "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Services\\MazeService.cs",
               "RelativeToolTip": "Services\\MazeService.cs",
-              "ViewState": "AgIAAF8BAAAAAAAAAAAIwIUBAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAJ4AAAAAAAAAAAAuwLYAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-03T19:21:00.923Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 0,
+              "Title": "Help.html",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Help\\Help.html",
+              "RelativeDocumentMoniker": "Help\\Help.html",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\MazeGen\\Help\\Help.html",
+              "RelativeToolTip": "Help\\Help.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAN8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-05-19T18:39:23.363Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
               "Title": "AboutForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\AboutForm.cs",
               "RelativeDocumentMoniker": "Forms\\AboutForm.cs",
@@ -129,7 +150,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "Theme.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Models\\Theme.cs",
               "RelativeDocumentMoniker": "Models\\Theme.cs",
@@ -142,7 +163,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "RegisterForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\RegisterForm.cs",
               "RelativeDocumentMoniker": "Forms\\RegisterForm.cs",
@@ -155,7 +176,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "Database.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Data\\Database.cs",
               "RelativeDocumentMoniker": "Data\\Database.cs",
@@ -168,7 +189,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "LoadMazeForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\LoadMazeForm.cs",
               "RelativeDocumentMoniker": "Forms\\LoadMazeForm.cs",
@@ -181,7 +202,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "SaveMazeForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\SaveMazeForm.cs",
               "RelativeDocumentMoniker": "Forms\\SaveMazeForm.cs",
@@ -194,7 +215,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -207,7 +228,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "AuthenticationService.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Services\\AuthenticationService.cs",
               "RelativeDocumentMoniker": "Services\\AuthenticationService.cs",
@@ -220,7 +241,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "LoginForm.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Forms\\LoginForm.cs",
               "RelativeDocumentMoniker": "Forms\\LoginForm.cs",
@@ -233,7 +254,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "Maze.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Models\\Maze.cs",
               "RelativeDocumentMoniker": "Models\\Maze.cs",
@@ -246,7 +267,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\Models\\User.cs",
               "RelativeDocumentMoniker": "Models\\User.cs",
@@ -259,7 +280,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "README.md",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\MazeGen\\README.md",
               "RelativeDocumentMoniker": "README.md",
